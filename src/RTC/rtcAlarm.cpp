@@ -22,14 +22,14 @@ void RTC::setAlarm(Duration duration) {
 	RTCTime now = Bridge::readTime();
 
 	// 2 step conversion from RTCTime to epoch time
-	struct tm calendarTime = TimeConverter::convertRTCTimeToCalendarTime(now);
+	TimeElements calendarTime = TimeConverter::convertRTCTimeToCalendarTime(now);
 	time_t nowTime = TimeConverter::convertCalendarTimeToEpochTime(calendarTime);
 
 	// calculate time of alarm
 	time_t alarmEpochTime = nowTime + duration;
 
 	// Reverse conversions
-	struct tm alarmCalendarTime = TimeConverter::convertEpochTimeToCalendarTime(alarmEpochTime);
+	TimeElements alarmCalendarTime = TimeConverter::convertEpochTimeToCalendarTime(alarmEpochTime);
 	RTCTime alarmRTCTime = TimeConverter::convertCalendarTimeToRTCTime(alarmCalendarTime);
 
 	Bridge::writeAlarm(alarmRTCTime);

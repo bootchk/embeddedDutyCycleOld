@@ -26,6 +26,7 @@
 									<listOptionValue builtIn="false" value="/home/bootch/energia-1.6.10E18/hardware/energia/msp430/cores/msp430"/>
 									<listOptionValue builtIn="false" value="/home/bootch/energia-1.6.10E18/hardware/energia/msp430/libraries/SPI"/>
 									<listOptionValue builtIn="false" value="/home/bootch/energia-1.6.10E18/hardware/tools/msp430/msp430/include"/>
+									<listOptionValue builtIn="false" value="/home/bootch/Energia/libraries/Time"/>
 								</option>
 								<option id="gnu.cpp.compiler.option.optimization.level.598079490" name="Optimization Level" superClass="gnu.cpp.compiler.option.optimization.level" useByScannerDiscovery="false" value="gnu.cpp.compiler.optimization.level.none" valueType="enumerated"/>
 								<option id="gnu.cpp.compiler.option.debugging.level.1354008232" name="Debug Level" superClass="gnu.cpp.compiler.option.debugging.level" useByScannerDiscovery="false" value="gnu.cpp.compiler.debugging.level.max" valueType="enumerated"/>
@@ -35,7 +36,7 @@
 							<tool id="cdt.managedbuild.tool.gnu.c.compiler.base.1572062245" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.base">
 								<option defaultValue="gnu.c.optimization.level.none" id="gnu.c.compiler.option.optimization.level.437564579" name="Optimization Level" superClass="gnu.c.compiler.option.optimization.level" useByScannerDiscovery="false" valueType="enumerated"/>
 								<option id="gnu.c.compiler.option.debugging.level.2037475907" name="Debug Level" superClass="gnu.c.compiler.option.debugging.level" useByScannerDiscovery="false" value="gnu.c.debugging.level.max" valueType="enumerated"/>
-								<option id="gnu.c.compiler.option.dialect.std.1047888266" superClass="gnu.c.compiler.option.dialect.std" useByScannerDiscovery="true" value="gnu.c.compiler.dialect.c11" valueType="enumerated"/>
+								<option id="gnu.c.compiler.option.dialect.std.1047888266" name="Language standard" superClass="gnu.c.compiler.option.dialect.std" useByScannerDiscovery="true" value="gnu.c.compiler.dialect.c11" valueType="enumerated"/>
 								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.1385397979" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 							</tool>
 							<tool id="cdt.managedbuild.tool.gnu.c.linker.base.1519803227" name="GCC C Linker" superClass="cdt.managedbuild.tool.gnu.c.linker.base"/>

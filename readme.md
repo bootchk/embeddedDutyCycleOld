@@ -37,6 +37,32 @@ The combination duty-cycles the mcu.  Average current drawn by the system depend
 
 The duty cycle can be very large.  For example, the system theoretically could wake up for one second every hundred years, powered by a coin cell battery.
 
+Dev env
+-
+
+The project is an Eclipse IDE project, using GCC or ARM GCC.
+The project has paths to include files for dependencies.
+
+The final build is intended to be in Energia IDE.
+
+
+
+Low level time libraries
+-
+
+"Calendar time" is broken into second, minute, hour, day, ...
+"Epoch time" is seconds from a reference instant.
+
+The RTC chip implements calendar time.  (Do any of them support epoch time?)
+
+Unix has a standard library for calendar time and epoch time. (time.h)
+Energia doesn't support it.
+Paul Stoffgren's Arduino Time library is similar to the Unix standard library (implements calendar and epoch time.)
+
+The design for setting alarm converts from calendar time to epoch time, does the math (simple integer math), and converts back.
+
+
+
 Features of Alarm class
 -
 
@@ -64,7 +90,7 @@ Depends on these other libraries:
     SPI library (in Arduino or Energia distribution)
     MSP430 DriverLib
 
-Classe tree:
+Class tree:
 
     app main.c
        DutyCycleLib
@@ -72,7 +98,7 @@ Classe tree:
                RTC  ( similar to Arduino-AB08XX)
                   Bridge
                      Arduino or Energia SPI library
-               Time (not Paul Stoffgren)
+               Time (for Arduino, author Paul Stoffgren)
                Some mcu HAL e.g. MSP430 DriverLib (to set up the interrupt pin)
 
 Power on reset (POR) and independent processes
