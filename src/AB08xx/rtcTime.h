@@ -1,4 +1,5 @@
 
+#pragma once
 
 
 /*
@@ -10,7 +11,7 @@
  * Is encoded BCD.
  * Year in range [0, 99]
  */
-typedef struct {
+struct RTCTime {
 	unsigned char Hundredth;
 	unsigned char Second;
 	unsigned char Minute;
@@ -18,7 +19,7 @@ typedef struct {
 	unsigned char DayOfMonth;
 	unsigned char Month;
 	unsigned char YearOfCentury;
-} RTCTime ;
+}  ;
 
 
 /*

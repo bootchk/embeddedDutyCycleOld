@@ -11,6 +11,7 @@
  */
 
 enum class Address : unsigned char {
+//enum Address {
 	Time =               0x00,
 	Alarm =              0x08,
 	Status =             0x0F,
@@ -27,6 +28,7 @@ enum class Address : unsigned char {
  * Various magical values written to various registers.
  */
 enum class Key : unsigned char {
+//enum Key {
 	UnlockOscillatorControl = 0xa1,     // unlocks OscillatorControl
 	UnlockMiscRegisters      = 0x9d,	// unlocks certain other registers when written to ConfigurationKey
 	AutocalibrationFilterEnable = 0xa0  // special value for AutocalibrationFilter

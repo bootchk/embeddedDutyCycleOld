@@ -7,7 +7,7 @@
 
 #include "rtc.h"
 
-#include "AB08xx/bridge.h"
+#include "../AB08xx/bridge.h"
 #include "timeConverter.h"
 
 /*
@@ -15,14 +15,14 @@
  * to type time_t (seconds since epoch) so we can use simple math to add Duration
  * then reverse conversion back to the type (RTCTime) that RTC expects.
  */
-void RTC::setAlarm(Duration int duration) {
+void RTC::setAlarm(Duration duration) {
 
 	// check preconditions
 
 	RTCTime now = Bridge::readTime();
 
 	// 2 step conversion from RTCTime to epoch time
-	struct tm calendarTime = TimeConverter::convertRTCTimeToCalendarTime(RTCTime);
+	struct tm calendarTime = TimeConverter::convertRTCTimeToCalendarTime(now);
 	time_t nowTime = TimeConverter::convertCalendarTimeToEpochTime(calendarTime);
 
 	// calculate time of alarm

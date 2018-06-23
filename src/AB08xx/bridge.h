@@ -16,7 +16,7 @@
 
 
 class Bridge {
-
+public:
 	/*
 	 * Configure mcu side of interface.
 	 */
@@ -36,5 +36,5 @@ class Bridge {
 	 * For both, RTCTime is raw, i.e. still BCD encoded for AB08xx
 	 */
 	static void writeAlarm(RTCTime);
-	static void readTime(RTCTime*);
+	static RTCTime readTime();
 };

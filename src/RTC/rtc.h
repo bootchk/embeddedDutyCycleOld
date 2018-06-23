@@ -1,5 +1,5 @@
 
-#include "alarmTypes.h"	// Duration
+#include "../alarmTypes.h"	// Duration
 
 
 /*

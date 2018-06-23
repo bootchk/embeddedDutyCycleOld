@@ -8,7 +8,14 @@
  */
 
 // Unix std library
-#include <time.h>
+// ARM gcc #include <sys/features.h>
+// #include <features.h>
+
+#include <ctime>	// C time.h
+
+// Depends on type defined by RTC chip
+#include "../AB08xx/rtcTime.h"
+
 
 
 class TimeConverter {

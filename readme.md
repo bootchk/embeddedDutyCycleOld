@@ -2,11 +2,9 @@
 embeddedDutyCycle
 -
 
-This project is a framework for duty cycling an embedded computer.
+A framework for duty cycling an embedded computer.
 
-To "duty cycle" means to sleep mostly, and wake (go on duty) rarely.
-
-Duty cycling saves energy e.g. battery life.
+To "duty cycle" means to sleep mostly, and wake (go on duty) rarely.  Duty cycling saves energy e.g. battery life.
 
 For an embedded computer (mcu), abstracts an external RTC and GPIO pins for an interrupt from it.
 

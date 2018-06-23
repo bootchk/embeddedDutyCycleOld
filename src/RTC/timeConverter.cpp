@@ -2,6 +2,7 @@
 #include "timeConverter.h"
 
 
+
 namespace {
 
 /*
@@ -17,6 +18,12 @@ uint8_t bin2bcd(uint8_t value)
 	return ((value / 10) << 4) + value % 10;
 }
 
+// TODO Tm years is since 1900
+int yearOfCenturyToTm(int yearOfCentury) {
+return 0;
+}
+
+
 } // namespace
 
 
@@ -28,7 +35,7 @@ struct tm TimeConverter::convertRTCTimeToCalendarTime(RTCTime rtcTime) {
 	/*
 	 * Field names Unix std
 	 */
-	calendarTime.tm_year = CalendarYrToTm(bcd2bin(buf.years); // /*+ (buf.weekdays.GP * 100)*/) + 2000;
+	calendarTime.tm_year = bcd2bin(rtcTime.YearOfCentury); // CalendarYrToTm(); // /*+ (buf.weekdays.GP * 100)*/) + 2000;
 	calendarTime.tm_mon = bcd2bin(rtcTime.Month);
 	calendarTime.tm_mday = bcd2bin(rtcTime.DayOfMonth);
 	calendarTime.tm_hour = bcd2bin(rtcTime.Hour24);
@@ -51,4 +58,12 @@ struct tm TimeConverter::convertRTCTimeToCalendarTime(RTCTime rtcTime) {
 	 */
 
 	return calendarTime;
+}
+
+
+time_t TimeConverter::convertCalendarTimeToEpochTime(struct tm& calendarTime) {
+	time_t epochTime  = 0 ;
+	epochTime = std::mktime( calendarTime) ;
+	return epochTime;
+
 }
