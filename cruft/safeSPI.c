@@ -1,4 +1,5 @@
 
+#ifdef NOTUSED
 #include "safeSPI.h"
 
 // A
@@ -15,3 +16,5 @@ bool SafeSPI::clearBit(){
 	return (read == write);
 
 }
+
+#endif

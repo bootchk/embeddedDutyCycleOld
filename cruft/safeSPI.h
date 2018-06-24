@@ -1,5 +1,5 @@
 
-
+#ifdef NOTUSED
 /*
  * Safe, by reading what was written, and comparing.
  *
@@ -26,3 +26,4 @@ public:
 	 */
 	static void clearRegister(unsigned char);
 };
+#endif

@@ -35,6 +35,20 @@ void Pins::clearAlarmInterruptOnPin() {
 	GPIO_clearInterrupt(AlarmSignalPort, AlarmSignalPin);
 }
 
-void Pins::isAlarmPinHigh() {
+bool Pins::isAlarmPinHigh() {
 	return (GPIO_getInputPinValue(AlarmSignalPort, AlarmSignalPin) != 0);
 }
+
+
+
+
+
+void Pins::selectSPISlave(){
+	// TODO
+}
+
+
+void Pins::deselectSPISlave(){
+	// TODO
+}
+

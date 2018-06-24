@@ -23,6 +23,7 @@
 							<tool id="cdt.managedbuild.tool.gnu.cpp.compiler.base.330483181" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.base">
 								<option id="gnu.cpp.compiler.option.include.paths.1794577480" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" useByScannerDiscovery="false" valueType="includePath">
 									<listOptionValue builtIn="false" value="/home/bootch/msp430ware_3_80_04_05/driverlib/driverlib/MSP430FR2xx_4xx"/>
+									<listOptionValue builtIn="false" value="/home/bootch/msp430ware_3_80_04_05/grlib/driverlib/MSP430FR2xx_4xx/deprecated/CCS"/>
 									<listOptionValue builtIn="false" value="/home/bootch/energia-1.6.10E18/hardware/energia/msp430/cores/msp430"/>
 									<listOptionValue builtIn="false" value="/home/bootch/energia-1.6.10E18/hardware/energia/msp430/libraries/SPI"/>
 									<listOptionValue builtIn="false" value="/home/bootch/energia-1.6.10E18/hardware/energia/msp430/variants/MSP-EXP430FR4133LP"/>

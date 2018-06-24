@@ -2,17 +2,9 @@
 #include "alarmLib.h"
 
 
-
-// private library
 #include "RTC/realTimeClock.h"  // Avoid clash with rtc.h"
-
-// layer that hides SPI
-#include "AB08xx/bridge.h"
-
-#include "pins.h"
-
-
-
+#include "pins.h"			// hides GPIO functions
+#include "AB08xx/bridge.h"	//  hides SPI
 
 
 
