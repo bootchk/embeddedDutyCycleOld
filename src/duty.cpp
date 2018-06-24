@@ -1,10 +1,9 @@
 
-#include "dutyLib.h"
-
 #include "alarmLib.h"
+#include "duty.h"
 
 
-#define DURATION 100
+
 
 
 
@@ -85,21 +84,16 @@ void Duty::onWakeForAlarm() {
 		// TODO sw reset
 	}
 
-	/*
-	 * Logic of this example: periodic alarms.
-	 * Set another alarm.
-	 *
-	 * Reset mcu since
-	 * Fail means system might sleep forever.
-	 */
-	if (!AlarmLib::setAlarm(DURATION)) {
-		// TODO sw reset
-	}
+	AlarmLib::clearAlarmOnMCU();
 
 	/*
-	 * Continuation typically is to sleep mcu.
+	 * Assert interrupts are cleared and no more will come, yet.
 	 *
-	 * Caller must clear alarm interrupt on mcu side.
-	 * In a timely manner: soon, before next scheduled alarm.
+	 * Continuation typically is to act, then sleep mcu.
 	 */
+}
+
+
+bool Duty::setAlarm(unsigned int duration) {
+	return AlarmLib::setAlarm(duration);
 }

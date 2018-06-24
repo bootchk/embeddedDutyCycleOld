@@ -3,8 +3,8 @@
 
 
 #include "RTC/realTimeClock.h"  // Avoid clash with rtc.h"
-#include "pins.h"			// hides GPIO functions
 #include "AB08xx/bridge.h"	//  hides SPI
+#include "pinfunction.h"			// hides GPIO functions
 
 
 
@@ -33,8 +33,8 @@ bool AlarmLib::clearAlarmOnRTC() {
 }
 
 
-void AlarmLib::clearAlarmInterruptOnMcu() {
-	Pins::clearAlarmInterruptOnPin();
+void AlarmLib::clearAlarmOnMCU() {
+	PinFunction::clearAlarmInterruptOnPin();
 }
 
 
@@ -45,7 +45,7 @@ bool AlarmLib::isAlarmInterruptSignalHigh() {
 	 * GPIO_getInputPinValue returns a unsigned byte result for pin mask byte argument.
 	 * Non-zero result means AlarmSignalPin is high.
 	 */
-	return Pins::isAlarmPinHigh();
+	return PinFunction::isAlarmPinHigh();
 }
 
 
@@ -62,7 +62,7 @@ void AlarmLib::configureMcuAlarmInterface() {
 	 * Pulse width is relatively long (1/4 second)
 	 * Use trailing edge, low-to-high
 	 */
-	Pins::configureAlarmPinPullupLoToHiInterrupt();
+	PinFunction::configureAlarmPinPullupLoToHiInterrupt();
 
 }
 

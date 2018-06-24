@@ -33,14 +33,24 @@ return 0;
  * Conversion offsets the year from different references.
  * Coming from RTC chip, year is offset from century.
  * On conversion to epoch time, it is offset from 1970.
+ * We don't really care (as long as it is consistent)
+ * since no human is reading the results.
+ *
+ * Omit hundredths, not in Unix type tm
+ * calendarTime.Hundreths = bcd2bin(buf.hundreths);
+ *
+ * Omit superflous fields:
+ * tm_wday
+ * tm_yday
+ * tm_isdst
+ *
+ * We are not using the calendar for printing, the typical use for these fields.
+ * I assume these fields are not used in reverse conversion.
  */
 
 TimeElements TimeConverter::convertRTCTimeToCalendarTime(RTCTime& rtcTime) {
 	TimeElements calendarTime;
 
-	/*
-	 * Field names Unix std: tm_year, etc.
-	 */
 	calendarTime.Year = bcd2bin(rtcTime.YearOfCentury); // CalendarYrToTm(); // /*+ (buf.weekdays.GP * 100)*/) + 2000;
 	calendarTime.Month = bcd2bin(rtcTime.Month);
 	calendarTime.Day = bcd2bin(rtcTime.DayOfMonth);
@@ -48,23 +58,15 @@ TimeElements TimeConverter::convertRTCTimeToCalendarTime(RTCTime& rtcTime) {
 	calendarTime.Minute = bcd2bin(rtcTime.Minute);
 	calendarTime.Second = bcd2bin(rtcTime.Second);
 
-	// Omit hundredths, not in Unix type tm
-	// calendarTime.Hundreths = bcd2bin(buf.hundreths);
-
-	// TODO is this valid?
-	/*
-	 * Omit superflous fields of Unix type tm
-	 * We are not using the calendar for printing, the typical use for these fields.
-	 * I assume these fields are not used in reverse conversion.
-	 *
-	 * Omit:
-	 * tm_wday
-	 * tm_yday
-	 * tm_isdst
-	 */
-
+	// TODO valid to omit fields?
 	return calendarTime;
 }
+
+
+// TODO reverse
+
+
+
 
 
 time_t TimeConverter::convertCalendarTimeToEpochTime(TimeElements& calendarTime) {
@@ -72,5 +74,13 @@ time_t TimeConverter::convertCalendarTimeToEpochTime(TimeElements& calendarTime)
 	// Equivalent to Unix mktime()
 	epochTime = makeTime( calendarTime) ;
 	return epochTime;
+
+}
+
+TimeElements  TimeConverter::convertEpochTimeToCalendarTime( time_t epochTime) {
+	TimeElements calendarTime ;
+	// Equivalent to Unix localtime()
+	breakTime( epochTime, calendarTime ) ;
+	return calendarTime;
 
 }

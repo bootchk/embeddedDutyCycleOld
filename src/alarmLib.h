@@ -119,10 +119,11 @@ public:
 	 */
 	static bool clearAlarmOnRTC();
 
+
 	/*
-	 * Clear interrupt flag on mcu side
+	 * Clear alarm interrupt flag on MCU side of signal.
 	 */
-	static void clearAlarmInterruptOnMcu();
+	static void clearAlarmOnMCU();
 
 	/*
 	 * Set alarm to go off duration from now.

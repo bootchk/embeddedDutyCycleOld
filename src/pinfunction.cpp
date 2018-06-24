@@ -1,4 +1,4 @@
-#include "pins.h"
+#include "pinfunction.h"
 
 /*
  * Choose mcu family and chip.
@@ -24,18 +24,25 @@
 #define AlarmSignalPort GPIO_PORT_P1
 #define AlarmSignalPin  GPIO_PIN6
 
+// TODO
+#define RTCSelectPort 1
+#define RTCSelectPin 2
 
-void Pins::configureAlarmPinPullupLoToHiInterrupt() {
+
+
+
+
+void PinFunction::configureAlarmPinPullupLoToHiInterrupt() {
 	GPIO_setAsInputPinWithPullUpResistor(AlarmSignalPort, AlarmSignalPin);
     GPIO_enableInterrupt(AlarmSignalPort, AlarmSignalPin);
 	GPIO_selectInterruptEdge(AlarmSignalPort, AlarmSignalPin, GPIO_LOW_TO_HIGH_TRANSITION);
 }
 
-void Pins::clearAlarmInterruptOnPin() {
+void PinFunction::clearAlarmInterruptOnPin() {
 	GPIO_clearInterrupt(AlarmSignalPort, AlarmSignalPin);
 }
 
-bool Pins::isAlarmPinHigh() {
+bool PinFunction::isAlarmPinHigh() {
 	return (GPIO_getInputPinValue(AlarmSignalPort, AlarmSignalPin) != 0);
 }
 
@@ -43,12 +50,19 @@ bool Pins::isAlarmPinHigh() {
 
 
 
-void Pins::selectSPISlave(){
-	// TODO
+
+
+void PinFunction::configureSelectSPIPin() {
+	GPIO_setAsOutputPin(RTCSelectPort, RTCSelectPin);
 }
 
 
-void Pins::deselectSPISlave(){
-	// TODO
+void PinFunction::selectSPISlave(){
+	GPIO_setOutputLowOnPin(RTCSelectPort, RTCSelectPin);
+}
+
+
+void PinFunction::deselectSPISlave(){
+	GPIO_setOutputHighOnPin(RTCSelectPort, RTCSelectPin);
 }
 

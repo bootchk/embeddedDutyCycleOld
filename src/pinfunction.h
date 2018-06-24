@@ -1,13 +1,17 @@
 
 /*
  * Abstracts functions of GPIO pins.
+ * Hides implementation: TI MSPWare Driverlib
  *
- * Two pins.
+ * Two pins:
+ * - alarm interrupt from RTC
+ * - chip (slave) select for SPI to RTC
  *
  * Three other pins are used by SPI.
  */
-class Pins {
+class PinFunction {
 public:
+	static void configureSelectSPIPin();
 	static void selectSPISlave();
 	static void deselectSPISlave();
 

@@ -19,7 +19,7 @@
 
 #include <SPI.h>
 
-#include "../pins.h"
+#include "../pinfunction.h"
 
 // TODO
 /*
@@ -29,8 +29,9 @@
  * Although there exists an overloaded transfer(SSpin, value) method
  */
 
+
 /*
- * Implementation for SPI channel.
+ * This implementation is the SPI choice for channel.
  * Uses Arduino/Energia library.
  */
 
@@ -63,20 +64,20 @@ unsigned char mangleWriteAddress(Address address) {
  * On write, we ignore what is read from slave.
  */
 void readBuffer( unsigned char * bufferPtr, unsigned int size) {
-	Pins::selectSPISlave();
+	PinFunction::selectSPISlave();
 	for(unsigned int i = 0; i < size; i++) {
 		bufferPtr[i] = SPI.transfer(0);
 	}
-	Pins::deselectSPISlave();
+	PinFunction::deselectSPISlave();
 }
 
 void writeBuffer( unsigned char * bufferPtr, unsigned int size) {
-	Pins::selectSPISlave();
+	PinFunction::selectSPISlave();
 	for(unsigned int i = 0; i < size; i++) {
 		// ignore returned read
 		(void) SPI.transfer(bufferPtr[i]);
 	}
-	Pins::deselectSPISlave();
+	PinFunction::deselectSPISlave();
 }
 
 
@@ -98,6 +99,7 @@ void Bridge::configureMcuSide() {
 
 	/*
 	 * Configure a set of the mcu's GPIO pins for the SPI function i.e. a SPI module
+	 * This only configures 3 of the 4 pins (not the Slave Select pin)
 	 */
 	// TODO the TI Energia document doesn't say this configure MISO??
 	SPI.begin();
@@ -108,6 +110,10 @@ void Bridge::configureMcuSide() {
 	SPI.setBitOrder(MSBFIRST);
 	SPI.setDataMode(SPI_MODE0);
 	SPI.setClockDivider(SPI_CLOCK_DIV128);
+
+
+	// Configure fourth pin: slave select
+	PinFunction::configureSelectSPIPin();
 }
 
 
@@ -116,7 +122,7 @@ void Bridge::configureMcuSide() {
 void Bridge::write(Address address, unsigned char value) {
 	// require mcu SPI interface configured
 
-	Pins::selectSPISlave();
+	PinFunction::selectSPISlave();
 	SPI.transfer(mangleWriteAddress(address));
 	SPI.transfer( value);
 }
@@ -128,10 +134,10 @@ unsigned char Bridge::read(Address address) {
 
 	unsigned char result;
 
-	Pins::selectSPISlave();
+	PinFunction::selectSPISlave();
 	SPI.transfer(mangleReadAddress(address));
 	result = SPI.transfer( 0 );
-	Pins::deselectSPISlave();
+	PinFunction::deselectSPISlave();
 	return result;
 }
 
@@ -139,10 +145,10 @@ unsigned char Bridge::read(Address address) {
 
 void Bridge::writeAlarm(RTCTime alarm) {
 
-	Pins::selectSPISlave();
+	PinFunction::selectSPISlave();
 	SPI.transfer(mangleWriteAddress(Address::Alarm));
 	writeBuffer((unsigned char*) &alarm, sizeof(alarm));
-	Pins::deselectSPISlave();
+	PinFunction::deselectSPISlave();
 
 	// assert alarm parameter is unchanged.
 	// assert time was written to RTC
@@ -152,10 +158,10 @@ void Bridge::writeAlarm(RTCTime alarm) {
 
 void Bridge::readTime(RTCTime* time) {
 
-	Pins::selectSPISlave();
+	PinFunction::selectSPISlave();
 	SPI.transfer(mangleReadAddress(Address::Time));
 	readBuffer((unsigned char*) time, sizeof(RTCTime));
-	Pins::deselectSPISlave();
+	PinFunction::deselectSPISlave();
 	// assert time buffer filled with read from rtc
 }
 

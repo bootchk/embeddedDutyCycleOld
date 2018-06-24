@@ -3,7 +3,8 @@
 /*
  * Duty cycle the mcu (sleep, wake on alarm from rtc.)
  *
- * Layer between main.c and alarmLib
+ * Layer below main.c
+ * Hides implementation of alarms.
  *
  * Specialized for MSP430 LPM4.5.
  *
@@ -18,10 +19,15 @@
 
 class Duty {
 public:
+
+	static void restoreMCUToPresleepConfiguration();
+
+
 	/*
 	 * TODO move this Configures mcu GPIO pins for AlarmLib
 	 *
-	 * Called on power on reset.
+	 * Called infrequently.
+	 * The system is intended to avoid power on reset caused by exhausting power.
 	 *
 	 * Exceptions:
 	 * sw resets the mcu if rtc is non-communicative (times out or other error).
@@ -33,6 +39,16 @@ public:
 	/*
 	 * Called on wake for alarm interrupt,
 	 * which is a reset (for TI LPM4.5, called BOR reset)
+	 *
+	 * Called frequently as part of duty cycling.
 	 */
 	static void onWakeForAlarm();
+
+	/*
+	 * Delegated, see Alarm class.
+	 *
+	 * Ensures that mcu is in presleep configuration.
+	 * Caller should follow immediately with sleep.
+	 */
+	static bool setAlarm(unsigned int);
 };

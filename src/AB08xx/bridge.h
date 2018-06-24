@@ -7,7 +7,8 @@
  * Change channel by substituting a different implementation.
  *
  * Also hides any quirks of the device:
- * Here, that the upper bit has special meaning.
+ * - the upper bit has special meaning.
+ * - send address, then values
  */
 
 #include "AB08xxRegisters.h"
