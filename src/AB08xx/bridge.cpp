@@ -2,7 +2,24 @@
 #include "bridge.h"
 
 
+/*
+ * Choose mcu family and chip.
+ * Must precede SPI.h
+ * This configures pins for SPI interface to the default for the Launchpad i.e. the dev kit board.
+ * I.E. configures a board.h file.
+ *
+ * A hack to get a clean compile in Eclipse IDE.
+ * !!! Not necessarily correct, they just eliminate compiler errors.
+ * Not needed if compiling in Energia IDE (where the Board Manager does magic.)
+ * Proper paths also necessary.
+ */
+#define __MSP430__
+#define __MSP430FR4133__ 1
+// #define MSPEXP430FR2433LP 1
+
 #include <SPI.h>
+
+#include "../pins.h"
 
 // TODO
 /*
@@ -28,14 +45,16 @@ namespace {
 
 // ABx8xx devices require clear upper bit of address, on read
 
-unsigned char mangleReadAddress(unsigned char address) {
-	return (127 & address);
+unsigned char mangleReadAddress(Address address) {
+	return (127 & (unsigned char) address);
 }
 
 // ABx8xx devices require set upper bit of address, on write
-unsigned char mangleWriteAddress(unsigned char address) {
-	return (128 | address);
+unsigned char mangleWriteAddress(Address address) {
+	return (128 | (unsigned char) address);
 }
+
+
 
 /*
  * Transfer many bytes over SPI.
@@ -44,16 +63,20 @@ unsigned char mangleWriteAddress(unsigned char address) {
  * On write, we ignore what is read from slave.
  */
 void readBuffer( unsigned char * bufferPtr, unsigned int size) {
-	for(int i = 0; i < size; i++) {
-		buf[i] = SPI.transfer(0);
+	Pins::selectSPISlave();
+	for(unsigned int i = 0; i < size; i++) {
+		bufferPtr[i] = SPI.transfer(0);
 	}
+	Pins::deselectSPISlave();
 }
 
 void writeBuffer( unsigned char * bufferPtr, unsigned int size) {
-	for(int i = 0; i < size; i++) {
+	Pins::selectSPISlave();
+	for(unsigned int i = 0; i < size; i++) {
 		// ignore returned read
-		(void) SPI.transfer(buf[i]);
+		(void) SPI.transfer(bufferPtr[i]);
 	}
+	Pins::deselectSPISlave();
 }
 
 
@@ -63,21 +86,21 @@ void writeBuffer( unsigned char * bufferPtr, unsigned int size) {
 
 
 /*
- * Four SPI pins are chosen by SPI library.
+ * Three SPI pins are chosen by SPI library.
  *
  * Alternatively, the implementation could choose another SPI peripheral on the mcu,
  * using a different set of pins.
  *
  * See SPI::setModule() for choosing an alternate SPI peripheral.
  */
-static void Bridge::configureMcuSide() {
+void Bridge::configureMcuSide() {
 	// not require isSPIReady() since configuration is on the mcu side
 
 	/*
 	 * Configure a set of the mcu's GPIO pins for the SPI function i.e. a SPI module
 	 */
 	// TODO the TI Energia document doesn't say this configure MISO??
-	SPI::begin();
+	SPI.begin();
 
 	/*
 	 * Configure the mcu SPI peripheral with parameters of rtc chip's SPI
@@ -93,32 +116,33 @@ static void Bridge::configureMcuSide() {
 void Bridge::write(Address address, unsigned char value) {
 	// require mcu SPI interface configured
 
-
-
-	SPI.transfer(pin, (128 | address));
-
-	SPI.transfer( pin, value, SPI_LAST);
+	Pins::selectSPISlave();
+	SPI.transfer(mangleWriteAddress(address));
+	SPI.transfer( value);
 }
 
 
 
-unsigned char Bridge::read(Address address, unsigned char value) {
+unsigned char Bridge::read(Address address) {
 	// require mcu SPI interface configured
 
 	unsigned char result;
 
+	Pins::selectSPISlave();
 	SPI.transfer(mangleReadAddress(address));
-
-	result = SPI.transfer( value, SPI_LAST);
+	result = SPI.transfer( 0 );
+	Pins::deselectSPISlave();
 	return result;
 }
 
 
 
 void Bridge::writeAlarm(RTCTime alarm) {
-	SPI.transfer(mangleWriteAddress(Address::Alarm));
 
-	writeBuffer((unsigned char*) &alarm, sizeof(time));
+	Pins::selectSPISlave();
+	SPI.transfer(mangleWriteAddress(Address::Alarm));
+	writeBuffer((unsigned char*) &alarm, sizeof(alarm));
+	Pins::deselectSPISlave();
 
 	// assert alarm parameter is unchanged.
 	// assert time was written to RTC
@@ -127,10 +151,11 @@ void Bridge::writeAlarm(RTCTime alarm) {
 
 
 void Bridge::readTime(RTCTime* time) {
+
+	Pins::selectSPISlave();
 	SPI.transfer(mangleReadAddress(Address::Time));
-
-	readBuffer((unsigned char*) time, sizeof(time));
-
+	readBuffer((unsigned char*) time, sizeof(RTCTime));
+	Pins::deselectSPISlave();
 	// assert time buffer filled with read from rtc
 }
 

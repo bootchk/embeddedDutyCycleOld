@@ -5,9 +5,8 @@
  * Which is sufficiently complex and unrelated that it is in a separate file.
  */
 
-#include "rtc.h"
-
 #include "../AB08xx/bridge.h"
+#include "realTimeClock.h"
 #include "timeConverter.h"
 
 /*
@@ -15,11 +14,12 @@
  * to type time_t (seconds since epoch) so we can use simple math to add Duration
  * then reverse conversion back to the type (RTCTime) that RTC expects.
  */
-void RTC::setAlarm(Duration duration) {
+bool RTC::setAlarm(Duration duration) {
 
 	// check preconditions
 
-	RTCTime now = Bridge::readTime();
+	RTCTime now;
+	Bridge::readTime(&now);
 
 	// 2 step conversion from RTCTime to epoch time
 	TimeElements calendarTime = TimeConverter::convertRTCTimeToCalendarTime(now);
@@ -33,5 +33,8 @@ void RTC::setAlarm(Duration duration) {
 	RTCTime alarmRTCTime = TimeConverter::convertCalendarTimeToRTCTime(alarmCalendarTime);
 
 	Bridge::writeAlarm(alarmRTCTime);
-	// ensure alarm is set
+
+	// ensure alarm is set properly by reading it and comparing
+	// TODO
+	return false;
 }

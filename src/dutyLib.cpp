@@ -3,7 +3,8 @@
 
 #include "alarmLib.h"
 
-#include <cassert>
+
+#define DURATION 100
 
 
 
@@ -28,7 +29,9 @@ void Duty::onPowerOnReset() {
 
 	while ( ! AlarmLib::isSPIReady() ) {
 		i++;
-		if (i > 100) assert(false);	// sw reset
+		if (i > 100) {
+			// TODO sw reset
+		}
 	}
 	// assert alarm interrupt signal is high
 	// mcu pin resets to an input, but without interrupt enabled
@@ -48,7 +51,7 @@ void Duty::onPowerOnReset() {
 }
 
 
-void Duty::onAlarm() {
+void Duty::onWakeForAlarm() {
 	/*
 	 * Conditions:
 	 *
@@ -68,7 +71,9 @@ void Duty::onAlarm() {
 	/*
 	 * Fail means the system is in invalid state (mcu not POR, but rtc is POR)
 	 */
-	assert(AlarmLib::isSPIReady());
+	 if (!AlarmLib::isSPIReady()) {
+		 // TODO reset
+	 }
 
 	/*
 	 * Clear alarm on rtc side.
@@ -76,7 +81,9 @@ void Duty::onAlarm() {
 	 * Reset mcu since
 	 * Fail means RTC may be continuing to generate interrupt signal on Fout/nIRQ
 	 */
-	if (!AlarmLib::clearAlarm())  assert(false);
+	if (!AlarmLib::clearAlarmOnRTC())  {
+		// TODO sw reset
+	}
 
 	/*
 	 * Logic of this example: periodic alarms.
@@ -85,7 +92,9 @@ void Duty::onAlarm() {
 	 * Reset mcu since
 	 * Fail means system might sleep forever.
 	 */
-	if (!AlarmLib::setAlarm())  assert(false);
+	if (!AlarmLib::setAlarm(DURATION)) {
+		// TODO sw reset
+	}
 
 	/*
 	 * Continuation typically is to sleep mcu.

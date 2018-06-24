@@ -74,7 +74,7 @@ The rtc is not synchronized to any other clock (not wall time).
 
 An rtc chip typically has many other features that are not used here:
 
-     - what is real time (synchronized to sideral time)
+     - "real" time (synchronized to sideral time)
      - calendar features (e.g. what is the day of the week)
      - incoming interrupts to the RTC
      - other interrupts from the RTC
@@ -89,8 +89,10 @@ Depends on these other libraries:
     not:  https://github.com/nigelb/Arduino-AB08XX
     SPI library (in Arduino or Energia distribution)
     MSP430 DriverLib
+    Arduino Time, Paul Stoffgren
 
-Class tree:
+Classes
+-
 
     app main.c
        DutyCycleLib

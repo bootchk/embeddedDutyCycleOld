@@ -28,6 +28,14 @@ public:
 	 */
 	static void clearIRQInterrupt();
 
+
+	/*
+	 * TODO
+	 */
+	static bool setAlarm(Duration);
+
+
+
 	/*
 	 * Configure RTC to use an oscillator that is both precise and low power.
 	 * See data sheet for details and other modes.
@@ -40,7 +48,7 @@ public:
 	 */
 	static void configureAlarmInterruptToFoutnIRQPin();
 
-	static void setAlarm(Duration);
+
 
 private:
 	static void selectOscModeRCCalibratedWithAutocalibrationPeriod();

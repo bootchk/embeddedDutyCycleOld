@@ -1,21 +1,18 @@
 
 #include "alarmLib.h"
 
-# mcu hal layer e.g. MSPWare DriverLib
-#include <gpio.h>	// depends on msp430.h
 
-# private library
-#include "rtc.h"
+
+// private library
+#include "RTC/realTimeClock.h"  // Avoid clash with rtc.h"
 
 // layer that hides SPI
 #include "AB08xx/bridge.h"
 
+#include "pins.h"
 
 
 
-// rename from hal namespace to alarmLib namespace
-#define AlarmSignalPort GPIO_PORT_P1
-#define AlarmSignalPin  GPIO_PIN6
 
 
 
@@ -32,7 +29,9 @@ bool AlarmLib::isSPIReady() {
 
 bool AlarmLib::clearAlarmOnRTC() {
 	// Tell RTC to end interrupt pulse (signal to high) if not already so
-	if (! RTC::clearIRQInterrupt() )
+
+	RTC::clearIRQInterrupt();
+	if (!isAlarmInterruptSignalHigh())
 		return false;	// SPI write failed
 
 	return (AlarmLib::isAlarmInterruptSignalHigh());
@@ -43,7 +42,7 @@ bool AlarmLib::clearAlarmOnRTC() {
 
 
 void AlarmLib::clearAlarmInterruptOnMcu() {
-	GPIO_clearInterrupt(AlarmSignalPort, AlarmSignalPin);
+	Pins::clearAlarmInterruptOnPin();
 }
 
 
@@ -54,7 +53,7 @@ bool AlarmLib::isAlarmInterruptSignalHigh() {
 	 * GPIO_getInputPinValue returns a unsigned byte result for pin mask byte argument.
 	 * Non-zero result means AlarmSignalPin is high.
 	 */
-	return (GPIO_getInputPinValue(AlarmSignalPort, AlarmSignalPin) != 0);
+	return Pins::isAlarmPinHigh();
 }
 
 
@@ -71,9 +70,8 @@ void AlarmLib::configureMcuAlarmInterface() {
 	 * Pulse width is relatively long (1/4 second)
 	 * Use trailing edge, low-to-high
 	 */
-	GPIO_setAsInputPinWithPullUpResistor(AlarmSignalPort, AlarmSignalPin);
-	GPIO_enableInterrupt(AlarmSignalPort, AlarmSignalPin);
-	GPIO_selectInterruptEdge(AlarmSignalPort, AlarmSignalPin, GPIO_LOW_TO_HIGH_TRANSITION);
+	Pins::configureAlarmPinPullupLoToHiInterrupt();
+
 }
 
 
@@ -89,6 +87,9 @@ void AlarmLib::configureRTC() {
 }
 
 
+/*
+ * Must be bulletproof since is alarm is failed to set, may sleep forever.
+ */
 bool AlarmLib::setAlarm(Duration duration) {
 	bool result = false;
 
