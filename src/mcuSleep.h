@@ -7,17 +7,24 @@
  * - wake from sleep is a reset
  *
  * Implementation is for TI's LPM4.5 on MSP430
+ *
+ * Hides that implementation is two different modules:  cpu and pmm.
  */
 
 class MCUSleep {
 public:
 
 	/*
-	 * Sleep mcu.  Only wake will be a reset of some sort, usually from an interrupt.
+	 * Sleep mcu.
+	 * Locks state of GPIO.
+	 * Only wake will be a reset of some sort, usually from an interrupt.
 	 */
 	static void enterLowestPowerSleep();
 
 	/*
+	 * Unlocks GPIO state and makes effective any prior configuration.
+	 * GPIO can be configured prior, but said configuration is not effective until this call.
+	 *
 	 * Must follow isResetAWakeFromSleep
 	 * Once unlocked, you can't tell whether reset was from sleep.
 	 */
