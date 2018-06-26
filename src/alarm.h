@@ -3,13 +3,17 @@
 #include "alarmTypes.h"
 
 /*
- * Control both sides of an interface from mcu to rtc using SPI bus and one other pin.
+ * Provides an alarm from a remote RTC.
+ *
+ * Understands both sides of an interface from mcu to rtc using SPI bus and one other pin.
+ *
+ * Any other mcu device/pin configuration is the domain of the app.
  *
  *
  *
  * Algebra:
  *
- * isSPIReady must be called after power on and return true before other methods are called.
+ * waitSPIReadyOrReset must be called after power on and return true before other methods are called.
  *
  * configureMcuSPIInterface must precede configureRTC
  * configureMcuAlarmInterface can be done before or after (configureMcuSPIInterface, configureRTC)
@@ -21,6 +25,7 @@
  * There is no time setting function that must precede setAlarm()
  *
  * There is no method to cancel an alarm that has been set.
+ * (Design assumes only one alarm.)
  *
  * Results of improper sequences:
  *
@@ -28,8 +33,9 @@
  *
  * Calling any method before isSPIReady returns true after POR???
  */
-class AlarmLib {
-public:
+class Alarm {
+
+
 	/*
 	 * Returns true if RTC is out of reset and ready for SPI.
 	 * IOW RTC Fout/nIRQ pin is high.
@@ -55,6 +61,23 @@ public:
 	 */
 	static bool isSPIReady();
 
+public:
+
+	/*
+	 * Both might reset instead of return.
+	 */
+	/*
+	 * Spin finite time waiting for rtc ready for SPI, i.e. out of reset.
+	 *
+	 * If the rtc did not reset,
+	 * and since the same signal is used for an alarm interrupt and "SPI not ready"
+	 * it is also possible that the rtc is interrupting on alarm,
+	 * but the design uses a pulse interrupt, so the signal can only be low for a short time (1/64 second TODO)
+	 */
+	static void waitSPIReadyOrReset();
+
+	static void resetIfSPINotReady();
+
 	/*
 	 * Configure a set of mcu's GPIO pins for the mcu's SPI peripheral/module,
 	 * and configure the mcu's SPI peripheral with parameters matching the rtc's SPI.
@@ -76,6 +99,8 @@ public:
      */
 	static void configureRTC();
 
+
+private:
 	/*
 	 * Tell RTC to not assert alarm signal.
 	 *
@@ -87,7 +112,7 @@ public:
 	 *
 	 * Returns false if error:
 	 *  - SPI write error
-	 *  - fail ensure clause
+	 *  - signal fails to become high
 	 *
 	 *  This does NOT require isSPIReady() == true.
 	 *  See elsewhere.
@@ -118,6 +143,14 @@ public:
 	 *  and this method succeds.
 	 */
 	static bool clearAlarmOnRTC();
+
+
+public:
+	/*
+	 * Might reset instead of returning.
+	 * RTC is remote device that may fail.
+	 */
+	static void clearAlarmOnRTCOrReset();
 
 
 	/*

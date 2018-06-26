@@ -36,19 +36,20 @@ public:
 	 */
 	static void onPowerOnReset();
 
+
 	/*
+	 * Handle duty cycling aspect of waking:
+	 * Restore interface to RTC and clear the alarm.
+	 *
 	 * Called on wake for alarm interrupt,
 	 * which is a reset (for TI LPM4.5, called BOR reset)
-	 *
 	 * Called frequently as part of duty cycling.
 	 */
 	static void onWakeForAlarm();
 
 	/*
-	 * Delegated, see Alarm class.
-	 *
 	 * Ensures that mcu is in presleep configuration.
 	 * Caller should follow immediately with sleep.
 	 */
-	static bool setAlarm(unsigned int);
+	static void setAlarmOrReset(unsigned int);
 };

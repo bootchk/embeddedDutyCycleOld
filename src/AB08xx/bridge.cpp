@@ -19,7 +19,7 @@
 
 #include <SPI.h>
 
-#include "../pinfunction.h"
+#include "../MCU/pinfunction.h"
 
 // TODO
 /*
@@ -111,7 +111,6 @@ void Bridge::configureMcuSide() {
 	SPI.setDataMode(SPI_MODE0);
 	SPI.setClockDivider(SPI_CLOCK_DIV128);
 
-
 	// Configure fourth pin: slave select
 	PinFunction::configureSelectSPIPin();
 }
@@ -125,6 +124,7 @@ void Bridge::write(Address address, unsigned char value) {
 	PinFunction::selectSPISlave();
 	SPI.transfer(mangleWriteAddress(address));
 	SPI.transfer( value);
+	PinFunction::deselectSPISlave();
 }
 
 

@@ -2,6 +2,8 @@
 #include "duty.h"
 #include "mcuSleep.h"
 
+#include "MCU/powerMgtModule.h"   // stopWatchdog
+
 
 #define DURATION 100
 
@@ -10,10 +12,12 @@
 int main(void) {
 
 	/*
-	 * Reset has occurred in one of two ways:
+	 * Reset has occurred:
 	 * - from sleep
-	 * - from power on
+	 * - from power on or other reasons (Vcc faults, bus faults?)
 	 */
+
+	PMM::stopWatchdog();
 
 	Duty::restoreMCUToPresleepConfiguration();
 
@@ -21,28 +25,31 @@ int main(void) {
 	 * Dispatch on reason for wake.
 	 */
 	if (MCUSleep::isResetAWakeFromSleep()) {
+		MCUSleep::clearIsResetAWakeFromSleep();
 
 		MCUSleep::unlockMCUFromSleep();
-		// Interrupt is service now.
+		// Interrupt is serviced now, if presleep configuration enables interrupts
 		Duty::onWakeForAlarm();
-		// TODO app should act here
+		// TODO app should act using persistent state (in FRAM)
 	}
-	else {
-		MCUSleep::unlockMCUFromSleep();
+	else {	// power on reset
+		// Reset clears lock bit.  No need for: MCUSleep::unlockMCUFromSleep();
+
 		Duty::onPowerOnReset();
+
+		// TODO app should initialize state (FRAM is initialized at load time, not in resetHandler
 	}
 
 	// TODO DURATION should depend on app state.
 	/*
-	 * Fail means system might sleep forever, so only adequate response is reset mcu
+	 * Resets if fail to set alarm
 	 */
-	if (!Duty::setAlarm(DURATION)) {
-		// TODO sw reset
-	}
+	Duty::setAlarmOrReset(DURATION);
 
 	/*
 	 * Assert mcu is in presleep condition.
-	 * E.G. GPIO is not configured for SPI.
+	 * E.G. GPIO is not configured for SPI
+	 * TODO
 	 *
 	 * Assert some interrupt will come (E.G. a Duty Alarm)
 	 * else we would sleep forever.

@@ -1,44 +1,74 @@
 
-#include "alarmLib.h"
-
+#include "alarm.h"
 
 #include "RTC/realTimeClock.h"  // Avoid clash with rtc.h"
-#include "AB08xx/bridge.h"	//  hides SPI
-#include "pinfunction.h"			// hides GPIO functions
-
+#include "AB08xx/bridge.h"	    //  hides SPI
+#include "MCU/pinfunction.h"    // hides GPIO functions
+#include "MCU/powerMgtModule.h"
 
 
 
 /*
  * RTC signals SPI not ready (during reset) by asserting rtc:Fout/nIRQ pin low.
  * !!! Same pin as for the Alarm signal.
+ *
+ * Since SPI ready uses the alarm pin, it depends on interrupt is a pulse on rising edge.
+ * Alternatively, if signal is another RTC pin (nRST), the interrupt could be configured falling edge.
  */
-bool AlarmLib::isSPIReady() {
-	return (AlarmLib::isAlarmInterruptSignalHigh());
+bool Alarm::isSPIReady() {
+	return (Alarm::isAlarmInterruptSignalHigh());
+}
+
+
+void Alarm::resetIfSPINotReady() {
+	if (!Alarm::isSPIReady()) {
+		 // System is in invalid state (mcu not POR, but rtc is POR)
+		 PMM::triggerSoftwareBORReset();
+	 }
 }
 
 
 
-bool AlarmLib::clearAlarmOnRTC() {
+void Alarm::waitSPIReadyOrReset() {
+	int i;
+	while ( ! Alarm::isSPIReady() ) {
+		i++;
+		if (i > 100) {
+			PMM::triggerSoftwareBORReset();
+		}
+	}
+}
+
+
+
+bool Alarm::clearAlarmOnRTC() {
 	// Tell RTC to end interrupt pulse (signal to high) if not already so
 
 	RTC::clearIRQInterrupt();
 	if (!isAlarmInterruptSignalHigh())
 		return false;	// SPI write failed
 
-	return (AlarmLib::isAlarmInterruptSignalHigh());
+	return (Alarm::isAlarmInterruptSignalHigh());
+}
 
+
+
+void Alarm::clearAlarmOnRTCOrReset() {
+	if (!Alarm::clearAlarmOnRTC())  {
+		// RTC may be continuing to generate interrupt signal on Fout/nIRQ
+		PMM::triggerSoftwareBORReset();
+	}
 	// ensure RTC interrupt flag is clear
 	// ensure interrupt signal net is high
 }
 
 
-void AlarmLib::clearAlarmOnMCU() {
+void Alarm::clearAlarmOnMCU() {
 	PinFunction::clearAlarmInterruptOnPin();
 }
 
 
-bool AlarmLib::isAlarmInterruptSignalHigh() {
+bool Alarm::isAlarmInterruptSignalHigh() {
 	// requires pin configured as input
 
 	/*
@@ -50,12 +80,12 @@ bool AlarmLib::isAlarmInterruptSignalHigh() {
 
 
 
-void AlarmLib::configureMcuSPIInterface(){
+void Alarm::configureMcuSPIInterface(){
 	Bridge::configureMcuSide();
 }
 
 
-void AlarmLib::configureMcuAlarmInterface() {
+void Alarm::configureMcuAlarmInterface() {
 	/*
 	 * Pin is high when no interrupt.
 	 * RTC pulses low on interrupt.
@@ -68,7 +98,7 @@ void AlarmLib::configureMcuAlarmInterface() {
 
 
 
-void AlarmLib::configureRTC() {
+void Alarm::configureRTC() {
 	// require configureMcuSPIInterface
 
 	// Order of configuration not important.
@@ -82,7 +112,7 @@ void AlarmLib::configureRTC() {
 /*
  * Must be bulletproof since is alarm is failed to set, may sleep forever.
  */
-bool AlarmLib::setAlarm(Duration duration) {
+bool Alarm::setAlarm(Duration duration) {
 	bool result = false;
 
 	// delegate to RTC

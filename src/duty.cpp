@@ -1,9 +1,8 @@
 
-#include "alarmLib.h"
 #include "duty.h"
 
-
-
+#include "alarm.h"
+#include "MCU/powerMgtModule.h"	// Software reset
 
 
 
@@ -18,34 +17,22 @@ void Duty::onPowerOnReset() {
 
 	/*
 	 * Spin finite time waiting for rtc ready for SPI, i.e. out of reset.
-	 *
-	 * If the rtc did not reset,
-	 * and since the same signal is used for an alarm interrupt and "SPI not ready"
-	 * it is also possible that the rtc is interrupting on alarm,
-	 * but the design uses a pulse interrupt, so the signal can only be low for a short time (1/64 second TODO)
 	 */
-	int i = 0;
+	Alarm::waitSPIReadyOrReset();
 
-	while ( ! AlarmLib::isSPIReady() ) {
-		i++;
-		if (i > 100) {
-			// TODO sw reset
-		}
-	}
 	// assert alarm interrupt signal is high
 	// mcu pin resets to an input, but without interrupt enabled
 
 	// Assume rtc was reset also
 
 	// Must precede use of SPI to configure rtc
-	AlarmLib::configureMcuSPIInterface();
+	Alarm::configureMcuSPIInterface();
 
-	AlarmLib::configureMcuAlarmInterface();
+	Alarm::configureMcuAlarmInterface();
 
-	AlarmLib::configureRTC();
+	Alarm::configureRTC();
 
-	// ensure AlarmLib is ready for setAlarm()
-
+	// ensure Alarm is ready for setAlarm()
 	// caller typically calls setAlarm() and then sleeps.
 }
 
@@ -65,35 +52,39 @@ void Duty::onWakeForAlarm() {
 	 * The alarm interrupt is rising edge.
 	 */
 
-	// TODO Configure mcu spi pins etc.
+	// require alarm pin (also mean SPI ready) still configured as input
+
+	// Fail reset if RTC not alive.
+	Alarm::resetIfSPINotReady();
+
+	Alarm::configureMcuSPIInterface();
 
 	/*
-	 * Fail means the system is in invalid state (mcu not POR, but rtc is POR)
+	 May fail reset since RTC is remote device.
 	 */
-	 if (!AlarmLib::isSPIReady()) {
-		 // TODO reset
-	 }
+	Alarm::clearAlarmOnRTCOrReset();
+
+	Alarm::clearAlarmOnMCU();
 
 	/*
-	 * Clear alarm on rtc side.
-	 *
-	 * Reset mcu since
-	 * Fail means RTC may be continuing to generate interrupt signal on Fout/nIRQ
-	 */
-	if (!AlarmLib::clearAlarmOnRTC())  {
-		// TODO sw reset
-	}
-
-	AlarmLib::clearAlarmOnMCU();
-
-	/*
-	 * Assert interrupts are cleared and no more will come, yet.
+	 * Assert alarm is cleared and no more will come, yet.
+	 * Assert ready for setAlarm()
 	 *
 	 * Continuation typically is to act, then sleep mcu.
 	 */
 }
 
 
-bool Duty::setAlarm(unsigned int duration) {
-	return AlarmLib::setAlarm(duration);
+void Duty::setAlarmOrReset(unsigned int duration) {
+	/*
+	 * Fail means system might sleep forever, so only adequate response is reset mcu
+	 */
+	if (!Alarm::setAlarm(duration)) {
+		PMM::triggerSoftwareBORReset();
+	}
+}
+
+
+void Duty::restoreMCUToPresleepConfiguration() {
+	// TODO
 }

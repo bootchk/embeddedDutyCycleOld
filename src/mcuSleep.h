@@ -36,4 +36,5 @@ public:
 	 * False if not sleeping, and therefore a power on or software reset or other reset.
 	 */
 	static bool isResetAWakeFromSleep();
+	static void clearIsResetAWakeFromSleep();
 };

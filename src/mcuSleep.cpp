@@ -4,8 +4,8 @@
 /*
  * Implementation is MSP430 specific.
  */
-#include "MCU/pmm.h"
 #include "MCU/mcu.h"
+#include "MCU/powerMgtModule.h"
 
 
 
@@ -54,3 +54,6 @@ bool MCUSleep::isResetAWakeFromSleep() {
 	return PMM::isResetAWakeFromSleep();
 }
 
+void MCUSleep::clearIsResetAWakeFromSleep() {
+	PMM::clearIsResetAWakeFromSleep();
+}

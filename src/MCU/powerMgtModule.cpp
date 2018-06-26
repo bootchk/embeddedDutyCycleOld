@@ -1,5 +1,5 @@
 
-#include "pmm.h"
+#include "powerMgtModule.h"
 
 
 /*
@@ -19,7 +19,24 @@
 
 
 // mcu hal layer e.g. MSPWare DriverLib
-#include <pmm.h>	// depends on msp430.h
+// depends on msp430.h
+#include <pmm.h>
+
+// some mcu family members have watchdog a and b
+// #include <wdt_a.h>
+
+
+
+
+
+void PMM::stopWatchdog() {
+	// bare metal
+	WDTCTL = WDTPW + WDTHOLD;
+
+	// Using Driverlib
+    //WDT_A_hold();
+}
+
 
 
 void PMM::configureOff() {
@@ -27,7 +44,7 @@ void PMM::configureOff() {
 	// This saves a little more power.  The mode is not named.
 	PMM_disableSVSH();
 
-	// This gets x.5
+	// This gets x.5 power mode
 	PMM_turnOffRegulator();
 }
 
@@ -45,3 +62,7 @@ void PMM::clearIsResetAWakeFromSleep() {
 	PMM_clearInterrupt(PMM_LPM5_INTERRUPT);
 }
 
+
+void PMM::triggerSoftwareBORReset() {
+	PMM_trigBOR();
+}
