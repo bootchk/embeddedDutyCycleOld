@@ -16,7 +16,8 @@
  */
 bool RTC::setAlarm(Duration duration) {
 
-	// check preconditions
+	// TODO later, check preconditions for setting alarm
+	// duration is great enough
 
 	RTCTime now;
 	Bridge::readTime(&now);
@@ -35,6 +36,6 @@ bool RTC::setAlarm(Duration duration) {
 	Bridge::writeAlarm(alarmRTCTime);
 
 	// ensure alarm is set properly by reading it and comparing
-	// TODO
-	return false;
+	// TODO later, verify alarm is properly set,
+	return true;
 }

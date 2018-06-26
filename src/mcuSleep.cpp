@@ -6,6 +6,7 @@
  */
 #include "MCU/mcu.h"
 #include "MCU/powerMgtModule.h"
+#include "MCU/pinFunction.h"
 
 
 
@@ -62,5 +63,5 @@ void MCUSleep::clearIsResetAWakeFromSleep() {
 
 
 void MCUSleep::configureAllPinsLowPower() {
-	// TODO
+	PinFunction::configureAllGPIOPinsLowPower();
 }

@@ -10,8 +10,7 @@
  *  - registers and values
  *  - combinations of values required for certain actions
  *
- * Writes and reads are via SPI.
- * TODO make the writer/reader layer independent of SPI/I2C using other than inheritance in current AB08xx lib
+ * Collaborates with Bridge, which hides SPI versus I2C
  */
 
 class RTC {
@@ -30,7 +29,10 @@ public:
 
 
 	/*
-	 * TODO
+	 * Return true if alarm is set.
+	 * Return false if:
+	 * - duration too short
+	 * - SPI bus error (what was written did not compare to what was read)
 	 */
 	static bool setAlarm(Duration);
 

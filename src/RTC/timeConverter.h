@@ -28,7 +28,7 @@ public:
 	 * and vice versa
 	 */
 	static TimeElements convertRTCTimeToCalendarTime(RTCTime&);
-	static RTCTime& convertCalendarTimeToRTCTime(TimeElements);
+	static RTCTime convertCalendarTimeToRTCTime(TimeElements&);
 
 	/*
 	 * Convert calendar time to epoch time and vice versa

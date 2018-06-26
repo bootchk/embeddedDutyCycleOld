@@ -72,7 +72,7 @@ public:
 	 * If the rtc did not reset,
 	 * and since the same signal is used for an alarm interrupt and "SPI not ready"
 	 * it is also possible that the rtc is interrupting on alarm,
-	 * but the design uses a pulse interrupt, so the signal can only be low for a short time (1/64 second TODO)
+	 * but the design uses a pulse interrupt, so the signal can only be low for a short time (1/4 second ?)
 	 */
 	static void waitSPIReadyOrReset();
 

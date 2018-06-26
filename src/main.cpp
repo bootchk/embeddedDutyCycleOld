@@ -6,16 +6,12 @@
 #include "MCU/powerMgtModule.h"   // stopWatchdog
 
 
-#define DURATION 100
-
-
-
 int main(void) {
 
 	/*
 	 * Reset has occurred:
 	 * - from sleep
-	 * - from power on or other reasons (Vcc faults, bus faults?)
+	 * - OR from power on or other reasons (Vcc faults, bus faults?)
 	 */
 
 	PMM::stopWatchdog();
@@ -45,6 +41,7 @@ int main(void) {
 
 		Duty::onWakeForAlarm();
 		App::onWakeForAlarm();
+		// assert app done with useful work
 	}
 	else {	// power on reset
 		// Reset clears lock bit.  No need for: MCUSleep::unlockMCUFromSleep();
@@ -52,23 +49,27 @@ int main(void) {
 		/*
 		 * GPIO configuration is reset.
 		 * Configure Duty and App.
-		 * Effective immediately, since not locked.
+		 * Effective immediately, since GPIO not locked.
 		 */
 		Duty::onPowerOnReset();
 		App::onPowerOnReset();
+		// assert app in initial state
 	}
+
+	// Assert app is done with its useful work, or is in intial state
+
+	// Assert app has unconfigured any devices used ephemerally in its useful work
+	// Some GPIO pins that app uses may still be in use (e.g. an LED)
 
 	// Resets if fail to set alarm
 	Duty::setAlarmOrReset(App::durationOfSleep());
+
 	Duty::lowerMCUToPresleepConfiguration();
 
 	/*
-	 * Assert mcu is in presleep condition.
-	 * E.G. GPIO is not configured for SPI
-	 * TODO
+	 * Assert mcu is in presleep condition E.G. GPIO is not configured for SPI
 	 *
-	 * Assert some interrupt will come (E.G. a Duty Alarm)
-	 * else we would sleep forever.
+	 * Assert some interrupt will come (E.G. a Duty Alarm) else we would sleep forever.
 	 */
 	/*
 	 * Does not return.  Continuation is a reset.

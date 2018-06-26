@@ -20,7 +20,7 @@
 class Duty {
 public:
 	/*
-	 * Tears down the RTC SPI interface
+	 * Tear down the RTC SPI interface
 	 * (but the alarm pin remains configured.)
 	 */
 	static void lowerMCUToPresleepConfiguration();

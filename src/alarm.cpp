@@ -3,7 +3,7 @@
 
 #include "RTC/realTimeClock.h"  // Avoid clash with rtc.h"
 #include "AB08xx/bridge.h"	    //  hides SPI
-#include "MCU/pinfunction.h"    // hides GPIO functions
+#include "MCU/pinFunction.h"    // hides GPIO functions
 #include "MCU/powerMgtModule.h"
 
 

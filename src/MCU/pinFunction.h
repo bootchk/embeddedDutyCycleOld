@@ -18,4 +18,6 @@ public:
 	static void configureAlarmPinPullupLoToHiInterrupt();
 	static void clearAlarmInterruptOnPin();
 	static bool isAlarmPinHigh();
+
+	static void configureAllGPIOPinsLowPower();
 };

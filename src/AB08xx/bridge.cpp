@@ -19,15 +19,7 @@
 
 #include <SPI.h>
 
-#include "../MCU/pinfunction.h"
-
-// TODO
-/*
- * we don't need to specify SS pin on Energia?
- * When we called begin(), we set SS pin in the SPI library.
- * We don't need to specify it again here.
- * Although there exists an overloaded transfer(SSpin, value) method
- */
+#include "../MCU/pinFunction.h"
 
 
 /*
@@ -99,9 +91,16 @@ void Bridge::configureMcuSide() {
 
 	/*
 	 * Configure a set of the mcu's GPIO pins for the SPI function i.e. a SPI module
-	 * This only configures 3 of the 4 pins (not the Slave Select pin)
+	 * This only configures 3 of the 4 pins (not the Slave Select pin) ???
+	 * TI Energia document doesn't say this configure MISO ???
 	 */
-	// TODO the TI Energia document doesn't say this configure MISO??
+	// TODO fix SPI pins
+	/*
+	 * we don't need to specify SS pin on Energia?
+	 * Docs for begin() says is configures default SS pin in the SPI library.
+	 * But code seems to indicate it doesn't.
+	 * Although there exists an overloaded transfer(SSpin, value) method apparently not implemented on Energia.
+	 */
 	SPI.begin();
 
 	/*
@@ -113,6 +112,11 @@ void Bridge::configureMcuSide() {
 
 	// Configure fourth pin: slave select
 	PinFunction::configureSelectSPIPin();
+}
+
+
+void Bridge::unconfigureMcuSide() {
+	SPI.end();
 }
 
 
