@@ -19,12 +19,20 @@
 
 class Duty {
 public:
+	/*
+	 * Tears down the RTC SPI interface
+	 * (but the alarm pin remains configured.)
+	 */
+	static void lowerMCUToPresleepConfiguration();
 
+	/*
+	 * Same configuration as ensured by lowerMCUToPresleepConfiguration().
+	 */
 	static void restoreMCUToPresleepConfiguration();
 
 
 	/*
-	 * TODO move this Configures mcu GPIO pins for AlarmLib
+	 * Configures RTC interface and RTC for duty cycling Alarm
 	 *
 	 * Called infrequently.
 	 * The system is intended to avoid power on reset caused by exhausting power.
@@ -44,12 +52,18 @@ public:
 	 * Called on wake for alarm interrupt,
 	 * which is a reset (for TI LPM4.5, called BOR reset)
 	 * Called frequently as part of duty cycling.
+	 * RTC has not been reset.
 	 */
 	static void onWakeForAlarm();
 
 	/*
-	 * Ensures that mcu is in presleep configuration.
-	 * Caller should follow immediately with sleep.
+	 * Caller should follow immediately with:
+	 * - restoreMCUToPresleepConfiguration()
+	 * - sleep
+	 *
+	 * Duration must be long enough for the above.
+	 * As currently coded, will not work if the duration has expired
+	 * before sleep.
 	 */
 	static void setAlarmOrReset(unsigned int);
 };

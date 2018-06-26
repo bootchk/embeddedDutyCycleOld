@@ -37,4 +37,12 @@ public:
 	 */
 	static bool isResetAWakeFromSleep();
 	static void clearIsResetAWakeFromSleep();
+
+	/*
+	 * Called on reset.
+	 * Reset configures pins that might not be low power ( e.g. MSP430: input, possibly floating.)
+	 * Ensure they are low power.
+	 * Typically, this configuration is overridden subsequently.
+	 */
+	static void configureAllPinsLowPower();
 };

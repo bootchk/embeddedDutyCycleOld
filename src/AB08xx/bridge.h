@@ -22,6 +22,7 @@ public:
 	 * Configure mcu side of interface.
 	 */
 	static void configureMcuSide();
+	static void unconfigureMcuSide();
 
 	static unsigned char read(Address);
 

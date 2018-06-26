@@ -80,9 +80,8 @@ bool Alarm::isAlarmInterruptSignalHigh() {
 
 
 
-void Alarm::configureMcuSPIInterface(){
-	Bridge::configureMcuSide();
-}
+void Alarm::configureMcuSPIInterface(){ Bridge::configureMcuSide(); }
+void Alarm::unconfigureMcuSPIInterface() { Bridge::unconfigureMcuSide(); }
 
 
 void Alarm::configureMcuAlarmInterface() {

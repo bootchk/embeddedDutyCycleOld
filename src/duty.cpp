@@ -85,6 +85,18 @@ void Duty::setAlarmOrReset(unsigned int duration) {
 }
 
 
+/*
+ * Presleep configuration:
+ * - alarm pin configured
+ * - SPI pins low power
+ */
 void Duty::restoreMCUToPresleepConfiguration() {
-	// TODO
+	/*
+	 * Require SPI pins already low power
+	 */
+	Alarm::configureMcuAlarmInterface();
+}
+
+void Duty::lowerMCUToPresleepConfiguration() {
+	Alarm::unconfigureMcuSPIInterface();
 }

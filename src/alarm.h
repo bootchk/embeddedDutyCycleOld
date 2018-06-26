@@ -88,6 +88,16 @@ public:
 	 */
 	static void configureMcuSPIInterface();
 
+
+	/*
+	 * Change SPI interface to a low power condition.
+	 * When called, exists a set of in and out GPIO for SPI.
+	 * Ensure all all are low power (inputs not floating.)
+	 * Since RTC is expected to be alive and driving input pins, this might not do anything.
+	 */
+	static void unconfigureMcuSPIInterface();
+
+
 	/*
 	 * Configure one mcu GPIO pin for alarm interrupts from rtc.
 	 */

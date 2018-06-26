@@ -57,3 +57,10 @@ bool MCUSleep::isResetAWakeFromSleep() {
 void MCUSleep::clearIsResetAWakeFromSleep() {
 	PMM::clearIsResetAWakeFromSleep();
 }
+
+
+
+
+void MCUSleep::configureAllPinsLowPower() {
+	// TODO
+}

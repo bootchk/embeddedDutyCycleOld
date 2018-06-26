@@ -1,6 +1,7 @@
 
 #include "duty.h"
 #include "mcuSleep.h"
+#include "app.h"
 
 #include "MCU/powerMgtModule.h"   // stopWatchdog
 
@@ -19,7 +20,11 @@ int main(void) {
 
 	PMM::stopWatchdog();
 
-	Duty::restoreMCUToPresleepConfiguration();
+	/*
+	 * Establish base to be overridden.
+	 * This is not effective immediately in all cases, when GPIO is locked (on wake from alarm.)
+	 */
+    MCUSleep::configureAllPinsLowPower();
 
 	/*
 	 * Dispatch on reason for wake.
@@ -27,24 +32,35 @@ int main(void) {
 	if (MCUSleep::isResetAWakeFromSleep()) {
 		MCUSleep::clearIsResetAWakeFromSleep();
 
+		/*
+		 * GPIO config registers were reset (but GPIO state is held.)
+		 * Preconfigure as it was before sleep.
+		 * Effective upon unlockMCUFromSleep()
+		 */
+		Duty::restoreMCUToPresleepConfiguration();
+
 		MCUSleep::unlockMCUFromSleep();
+
 		// Interrupt is serviced now, if presleep configuration enables interrupts
+
 		Duty::onWakeForAlarm();
-		// TODO app should act using persistent state (in FRAM)
+		App::onWakeForAlarm();
 	}
 	else {	// power on reset
 		// Reset clears lock bit.  No need for: MCUSleep::unlockMCUFromSleep();
 
+		/*
+		 * GPIO configuration is reset.
+		 * Configure Duty and App.
+		 * Effective immediately, since not locked.
+		 */
 		Duty::onPowerOnReset();
-
-		// TODO app should initialize state (FRAM is initialized at load time, not in resetHandler
+		App::onPowerOnReset();
 	}
 
-	// TODO DURATION should depend on app state.
-	/*
-	 * Resets if fail to set alarm
-	 */
-	Duty::setAlarmOrReset(DURATION);
+	// Resets if fail to set alarm
+	Duty::setAlarmOrReset(App::durationOfSleep());
+	Duty::lowerMCUToPresleepConfiguration();
 
 	/*
 	 * Assert mcu is in presleep condition.
