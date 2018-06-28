@@ -2,18 +2,27 @@
 /*
  * Abstracts access to the RTC.
  *
- * A bridge across a channel.
- * Two different channels: SPI and I2C
+ * A bridge across a serial channel.
+ *
+ * Hides choice of two different serial channels: SPI or I2C
  * Change channel by substituting a different implementation.
  *
- * Also hides any quirks of the device:
+ * Hides any quirks of the remote device protocol:
  * - the upper bit has special meaning.
  * - send address, then values
+ *
+ * Hides handshaking: which is not necessary when slave is always ready for serial communication.
+ * More handshaking is necessary when there are many masters.
+ *
+ * Hides slave select.
+ *
+ * Hides multi-byte transfers.
  */
 
 #include "AB08xxRegisters.h"
 
 #include "rtcTime.h"
+
 
 
 class Bridge {

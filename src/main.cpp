@@ -40,6 +40,7 @@ int main(void) {
 		// Interrupt is serviced now, if presleep configuration enables interrupts
 
 		Duty::onWakeForAlarm();
+		// assert alarm interrupt is cleared and Duty is ready for setAlarm
 		App::onWakeForAlarm();
 		// assert app done with useful work
 	}
@@ -52,6 +53,7 @@ int main(void) {
 		 * Effective immediately, since GPIO not locked.
 		 */
 		Duty::onPowerOnReset();
+		// assert Duty is ready for setAlarm
 		App::onPowerOnReset();
 		// assert app in initial state
 	}
@@ -59,7 +61,7 @@ int main(void) {
 	// Assert app is done with its useful work, or is in intial state
 
 	// Assert app has unconfigured any devices used ephemerally in its useful work
-	// Some GPIO pins that app uses may still be in use (e.g. an LED)
+	// Some GPIO pins that app persists during sleep may still be in use (e.g. an LED)
 
 	// Resets if fail to set alarm
 	Duty::setAlarmOrReset(App::durationOfSleep());
@@ -67,7 +69,7 @@ int main(void) {
 	Duty::lowerMCUToPresleepConfiguration();
 
 	/*
-	 * Assert mcu is in presleep condition E.G. GPIO is not configured for SPI
+	 * Assert mcu is in presleep condition E.G. GPIO is not configured for Duty using SPI
 	 *
 	 * Assert some interrupt will come (E.G. a Duty Alarm) else we would sleep forever.
 	 */
