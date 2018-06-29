@@ -1,6 +1,7 @@
 
 #include "timeConverter.h"
 
+#include "makeBreakTime.h"
 
 
 namespace {
@@ -8,12 +9,12 @@ namespace {
 /*
  * Each nibble is a decimal digit.
  */
-uint8_t bcd2bin(uint8_t value)
+unsigned char bcd2bin(unsigned char value)
 {
 	return (value & 0x0F) + ((value >> 4) * 10);
 }
 
-uint8_t bin2bcd(uint8_t value)
+unsigned char bin2bcd(unsigned char value)
 {
 	return ((value / 10) << 4) + value % 10;
 }
@@ -48,8 +49,8 @@ return 0;
  * These fields are not used in reverse conversion (see makeTime() source code)
  */
 
-TimeElements TimeConverter::convertRTCTimeToCalendarTime(RTCTime& rtcTime) {
-	TimeElements calendarTime;
+CalendarTime TimeConverter::convertRTCTimeToCalendarTime(RTCTime& rtcTime) {
+	CalendarTime calendarTime;
 
 	calendarTime.Year = bcd2bin(rtcTime.YearOfCentury); // Not used: CalendarYrToTm(); // /*+ (buf.weekdays.GP * 100)*/) + 2000;
 	calendarTime.Month = bcd2bin(rtcTime.Month);
@@ -62,7 +63,7 @@ TimeElements TimeConverter::convertRTCTimeToCalendarTime(RTCTime& rtcTime) {
 }
 
 
-RTCTime TimeConverter::convertCalendarTimeToRTCTime(TimeElements& calendarTime) {
+RTCTime TimeConverter::convertCalendarTimeToRTCTime(CalendarTime& calendarTime) {
 	RTCTime rtcTime;
 
 	rtcTime.YearOfCentury = bin2bcd(calendarTime.Year);
@@ -79,16 +80,16 @@ RTCTime TimeConverter::convertCalendarTimeToRTCTime(TimeElements& calendarTime) 
 
 
 
-time_t TimeConverter::convertCalendarTimeToEpochTime(TimeElements& calendarTime) {
-	time_t epochTime  = 0 ;
+EpochTime TimeConverter::convertCalendarTimeToEpochTime(CalendarTime& calendarTime) {
+	EpochTime epochTime  = 0 ;
 	// Equivalent to Unix mktime()
 	epochTime = makeTime( calendarTime) ;
 	return epochTime;
 
 }
 
-TimeElements  TimeConverter::convertEpochTimeToCalendarTime( time_t epochTime) {
-	TimeElements calendarTime ;
+CalendarTime  TimeConverter::convertEpochTimeToCalendarTime( EpochTime epochTime) {
+	CalendarTime calendarTime ;
 	// Equivalent to Unix localtime()
 	breakTime( epochTime, calendarTime ) ;
 	return calendarTime;

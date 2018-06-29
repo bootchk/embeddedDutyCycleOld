@@ -13,7 +13,7 @@
  * If the platform support Unix std library:
  * #include <ctime>	// C time.h
  */
-#include "Time.h"	// TimeElements and time_t
+#include "timeTypes.h"
 
 
 // Depends on type defined by RTC chip
@@ -27,12 +27,12 @@ public:
 	 * Convert BCD encoded calendar into int encoded calendar.
 	 * and vice versa
 	 */
-	static TimeElements convertRTCTimeToCalendarTime(RTCTime&);
-	static RTCTime convertCalendarTimeToRTCTime(TimeElements&);
+	static CalendarTime convertRTCTimeToCalendarTime(RTCTime&);
+	static RTCTime convertCalendarTimeToRTCTime(CalendarTime&);
 
 	/*
 	 * Convert calendar time to epoch time and vice versa
 	 */
-	static time_t convertCalendarTimeToEpochTime(TimeElements&);
-	static TimeElements convertEpochTimeToCalendarTime(time_t);
+	static EpochTime convertCalendarTimeToEpochTime(CalendarTime&);
+	static CalendarTime convertEpochTimeToCalendarTime(EpochTime);
 };

@@ -27,9 +27,12 @@
  * Specialize for one family member.
  * Must precede eusci_b_spi.h
  */
+// For compiling in some IDE's where these are not defined earlier
+#ifndef __MSP430__
 #define __MSP430__
 #define __MSP430FR4133__
-// #define MSPEXP430FR2433LP 1
+// #define MSPEXP430FR2433LP
+#endif
 
 /*
  * Alias for the address of device instance on chosen family member.
@@ -41,6 +44,7 @@
 // TI DriverLib
 #include "eusci_a_spi.h"
 //#include "eusci_b_spi.h"
+
 #include "gpio.h"
 
 
@@ -106,6 +110,7 @@ void SPI::configureMaster() {
 }
 
 void SPI::unconfigureMaster() {
+	// Leave device configured, only unconfigure pins
 	unconfigureMasterPins();
 }
 

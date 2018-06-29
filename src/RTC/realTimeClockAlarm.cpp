@@ -11,7 +11,7 @@
 
 /*
  * Implementation is largely converting type (RTCTime) that RTC delivers
- * to type time_t (seconds since epoch) so we can use simple math to add Duration
+ * to type EpochTime (seconds since epoch) so we can use simple math to add Duration
  * then reverse conversion back to the type (RTCTime) that RTC expects.
  */
 bool RTC::setAlarm(Duration duration) {
@@ -23,14 +23,14 @@ bool RTC::setAlarm(Duration duration) {
 	Bridge::readTime(&now);
 
 	// 2 step conversion from RTCTime to epoch time
-	TimeElements calendarTime = TimeConverter::convertRTCTimeToCalendarTime(now);
-	time_t nowTime = TimeConverter::convertCalendarTimeToEpochTime(calendarTime);
+	CalendarTime calendarTime = TimeConverter::convertRTCTimeToCalendarTime(now);
+	EpochTime nowTime = TimeConverter::convertCalendarTimeToEpochTime(calendarTime);
 
 	// calculate time of alarm
-	time_t alarmEpochTime = nowTime + duration;
+	EpochTime alarmEpochTime = nowTime + duration;
 
 	// Reverse conversions
-	TimeElements alarmCalendarTime = TimeConverter::convertEpochTimeToCalendarTime(alarmEpochTime);
+	CalendarTime alarmCalendarTime = TimeConverter::convertEpochTimeToCalendarTime(alarmEpochTime);
 	RTCTime alarmRTCTime = TimeConverter::convertCalendarTimeToRTCTime(alarmCalendarTime);
 
 	Bridge::writeAlarm(alarmRTCTime);
