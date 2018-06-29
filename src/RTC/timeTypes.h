@@ -19,4 +19,7 @@ typedef struct  {
 // unsigned char Wday;   // day of week, sunday is day 1
 
 
+/*
+ * On most embedded machines, 32 bits, suffers from 2038 problem.
+ */
 typedef unsigned long EpochTime;

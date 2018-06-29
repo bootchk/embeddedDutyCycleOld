@@ -1,8 +1,10 @@
 
 #include "mcu.h"
 
+#ifndef __MSP430__
 #define __MSP430__
 #define __MSP430FR4133__
+#endif
 
 #include "msp430.h"
 

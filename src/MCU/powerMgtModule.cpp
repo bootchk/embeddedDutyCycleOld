@@ -13,8 +13,10 @@
  * Not needed if compiling in Energia IDE (where the Board Manager does magic.)
  * Proper paths also necessary.
  */
+#ifndef __MSP430__
 #define __MSP430__
-#define __MSP430FR4133__ 1
+#define __MSP430FR4133__
+#endif
 
 
 
