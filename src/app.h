@@ -22,4 +22,9 @@ public:
 	 * Result depends on state of app.
 	 */
 	static unsigned int durationOfSleep();
+
+	/*
+	 * Configure GPIO that persists through sleep.
+	 */
+	static void configureSleepingGPIO();
 };

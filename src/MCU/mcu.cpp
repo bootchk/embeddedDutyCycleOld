@@ -15,8 +15,11 @@ void MCU::enterLPM4orLPM4_5(){
 	 * Set certain bits in the mcu status register (SR)
 	 *
 	 * Alternatives:
-	 * - LPM4 macro
+	 * - LPM4 macro (doesn't atomic set GIE)
 	 * - __bis_SR_register(LPM4_bits);
 	 */
-	LPM4;
+	/*
+	 * Atomically enable global interrupts and sleep.
+	 */
+	__bis_SR_register(LPM4_bits & GIE);
 }

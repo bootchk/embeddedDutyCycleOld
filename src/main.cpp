@@ -6,6 +6,10 @@
 #include "MCU/powerMgtModule.h"   // stopWatchdog
 
 
+
+// TODO need ISR for RTC interrupt?
+
+
 int main(void) {
 
 	/*
@@ -34,6 +38,7 @@ int main(void) {
 		 * Effective upon unlockMCUFromSleep()
 		 */
 		Duty::restoreMCUToPresleepConfiguration();
+		App::configureSleepingGPIO();
 
 		MCUSleep::unlockMCUFromSleep();
 
@@ -43,6 +48,7 @@ int main(void) {
 		// assert alarm interrupt is cleared and Duty is ready for setAlarm
 		App::onWakeForAlarm();
 		// assert app done with useful work
+		// assert GPIO in sleeping configuration
 	}
 	else {	// power on reset
 		// Reset clears lock bit.  No need for: MCUSleep::unlockMCUFromSleep();
@@ -55,7 +61,7 @@ int main(void) {
 		Duty::onPowerOnReset();
 		// assert Duty is ready for setAlarm
 		App::onPowerOnReset();
-		// assert app in initial state
+		// assert app in initial state and GPIO in sleeping configuration
 	}
 
 	// Assert app is done with its useful work, or is in intial state
