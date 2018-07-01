@@ -30,9 +30,10 @@
 // For compiling in some IDE's where these are not defined earlier
 #ifndef __MSP430__
 #define __MSP430__
-#define __MSP430FR4133__
+#define __MSP430FR2033__
 // #define MSPEXP430FR2433LP
 #endif
+
 
 
 // TI DriverLib
@@ -54,6 +55,7 @@
 /*
  * Address of chosen device instance on chosen family member.
  * MSP430FR2433 choices are A0, A1, B0
+ * !!! if family member does not contain the choice of instance, you get compile errors.
  */
 #define SPIInstanceAddress		EUSCI_A1_BASE
 

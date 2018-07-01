@@ -107,6 +107,7 @@ void Alarm::configureRTC() {
 	// require configureMcuSPIInterface
 
 	// Order of configuration not important.
+	RTC::configure24HourMode();
 
 	RTC::configureRCCalibratedOscillatorMode();
 

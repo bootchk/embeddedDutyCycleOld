@@ -44,7 +44,14 @@ void RTC::configureAlarmInterruptToFoutnIRQPin() {
 	RTC::connectFoutnIRQPinToAlarmSignal();
 }
 
-
+void RTC::configure24HourMode() {
+	/*
+	 * BIT7 == 0 -> not stopped
+	 * BIT6 == 1 -> 24 hour mode
+	 * BIT0 == 0 -> counter registers locked
+	 */
+	Bridge::write(Address::Control1, (unsigned char) 0b01000000 ); // (BIT6) ); );
+}
 
 
 /*
@@ -54,8 +61,7 @@ void RTC::configureAlarmInterruptToFoutnIRQPin() {
 
 void RTC::selectOscModeRCCalibratedWithAutocalibrationPeriod() {
 
-	// Unlock configuration register
-	Bridge::write(Address::ConfigurationKey, (unsigned char) Key::UnlockOscillatorControl );
+	unlockOscControlRegister();
 
 	// OSEL on => BIT7;
 	// ACAL == 10 (17 minute autocalibration period) => BIT6
@@ -65,12 +71,13 @@ void RTC::selectOscModeRCCalibratedWithAutocalibrationPeriod() {
 
 
 void RTC::enableAutocalibrationFilter() {
-	// Unlock configuration register
-	Bridge::write(Address::ConfigurationKey, (unsigned char) Key::UnlockMiscRegisters );
+	unlockMiscRegisters();
 
 	// Enable filter
 	Bridge::write(Address::AutocalibrationFilter, (unsigned char) Key::AutocalibrationFilterEnable );
 }
+
+
 
 
 void RTC::enablePulseInterruptForAlarm() {
@@ -90,4 +97,13 @@ void RTC::connectFoutnIRQPinToAlarmSignal() {
 	 * bits 0,1: OUT1S: == 11, pin is signal nAIRQ if AIE is set, else OUT
 	 */
 	Bridge::write(Address::Control2, 0b11 );
+}
+
+
+void RTC::unlockMiscRegisters() {
+	Bridge::write(Address::ConfigurationKey, (unsigned char) Key::UnlockMiscRegisters );
+}
+
+void RTC::unlockOscControlRegister() {
+	Bridge::write(Address::ConfigurationKey, (unsigned char) Key::UnlockOscillatorControl );
 }

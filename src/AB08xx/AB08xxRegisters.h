@@ -15,6 +15,7 @@ enum class Address : unsigned char {
 	Time =               0x00,
 	Alarm =              0x08,
 	Status =             0x0F,
+	Control1 =           0x10,
 	Control2 =           0x11,
 	InterruptMask =      0x12,
 	OscillatorControl =  0x1c,

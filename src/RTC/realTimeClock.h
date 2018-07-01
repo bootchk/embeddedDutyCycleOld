@@ -39,6 +39,21 @@ public:
 
 
 	/*
+	 * Configuration methods.
+	 *
+	 * At POR reset, the RTC should be:
+	 * - running (CTRL1.stop is cleared)
+	 * - in 12 hour mode
+	 * - using XTAL oscillator mode
+	 */
+
+	/*
+	 * Configure hour counter to count to 24.
+	 * !!! If you omit, upper nibble of hour counter is NOT hours tens digit, but include bit for AM/PM
+	 */
+	static void configure24HourMode();
+
+	/*
 	 * Configure RTC to use an oscillator that is both precise and low power.
 	 * See data sheet for details and other modes.
 	 * If you don't call this, RTC defaults at reset to XTAL oscillator mode.
@@ -57,4 +72,8 @@ private:
 	static void enableAutocalibrationFilter();
 	static void enablePulseInterruptForAlarm();
 	static void connectFoutnIRQPinToAlarmSignal();
+
+	static void unlockMiscRegisters();
+	static void unlockOscControlRegister();
+
 };
