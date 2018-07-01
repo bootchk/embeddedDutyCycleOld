@@ -34,12 +34,6 @@
 // #define MSPEXP430FR2433LP
 #endif
 
-/*
- * Alias for the address of device instance on chosen family member.
- * MSP430FR2433 choices are A0, A1, B0
- */
-#define SPIInstanceAddress		EUSCI_A0_BASE
-
 
 // TI DriverLib
 #include "eusci_a_spi.h"
@@ -48,11 +42,20 @@
 #include "gpio.h"
 
 
+
+
 /*
- * Local alias to definitions specific to family member from gpio.h
- *
- * Specific to choice of instance of serial device
+ * Local alias to definitions specific to:
+ * - choice of family member (here MSP430FR2433)
+ * - choice of instance of serial device (here UCA1)
+ * Right hand sides from gpio.h
  */
+
+/*
+ * Address of chosen device instance on chosen family member.
+ * MSP430FR2433 choices are A0, A1, B0
+ */
+#define SPIInstanceAddress		EUSCI_A1_BASE
 
 // msp430fr2433 specific, using instance UCB0: 1.2, 1.3, 1.1
 // msp430fr2433 specific, using instance UCA1: 2.6, 2.5, 2.4
@@ -66,6 +69,7 @@
 // P2.4
 #define SPI_CLK_PORT  GPIO_PORT_P2
 #define SPI_CLK_PIN   GPIO_PIN4
+
 
 
 
