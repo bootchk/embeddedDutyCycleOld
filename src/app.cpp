@@ -3,7 +3,8 @@
 
 #include "LED/led.h"
 
-#pragma PERSISTENT(ledState)
+// C syntax: #pragma PERSISTENT(ledState)
+#pragma PERSISTENT
 bool ledState = false;
 
 

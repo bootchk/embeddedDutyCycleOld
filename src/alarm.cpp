@@ -43,12 +43,18 @@ void Alarm::waitSPIReadyOrReset() {
 
 bool Alarm::clearAlarmOnRTC() {
 	// Tell RTC to end interrupt pulse (signal to high) if not already so
+	bool result;
 
+	// Simple write to a register of RTC
 	RTC::clearIRQInterrupt();
-	if (!isAlarmInterruptSignalHigh())
-		return false;	// SPI write failed
 
-	return (Alarm::isAlarmInterruptSignalHigh());
+	// RTC should lower signal
+	// TODO delay needed?
+
+	result = isAlarmInterruptSignalHigh();
+
+    // assert alarm signal high or result is false
+	return result;
 }
 
 
