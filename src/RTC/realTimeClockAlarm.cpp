@@ -9,6 +9,15 @@
 #include "realTimeClock.h"
 #include "timeConverter.h"
 
+
+
+/*
+ * !!! If the RTC stops responding, system is failed, there is no practical action to take.
+ * During testing, without proper connection to RTC,
+ * this code seems to function since reads and writes to RTC will work as far as mcu can tell,
+ * except that reads will return zero e.g. now time will be zero.
+ */
+
 /*
  * Implementation is largely converting type (RTCTime) that RTC delivers
  * to type EpochTime (seconds since epoch) so we can use simple math to add Duration
@@ -36,6 +45,11 @@ bool RTC::setAlarm(Duration duration) {
 	Bridge::writeAlarm(alarmRTCTime);
 
 	// ensure alarm is set properly by reading it and comparing
-	// TODO later, verify alarm is properly set,
+	// TODO later
+	/*
+	 * Verify alarm is properly set by reading and compare
+	 * If it is not set properly, the system may sleep a very long time.
+	 * Also verify that now time is not zero.
+	 */
 	return true;
 }
