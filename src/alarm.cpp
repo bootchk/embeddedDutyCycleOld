@@ -118,7 +118,7 @@ void Alarm::configureRTC() {
  * Must be bulletproof since is alarm is failed to set, may sleep forever.
  */
 bool Alarm::setAlarm(Duration duration) {
-	bool result = false;
+	bool result;
 
 	// delegate to RTC
 	result = RTC::setAlarm(duration);
