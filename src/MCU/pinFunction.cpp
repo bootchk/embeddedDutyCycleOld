@@ -47,6 +47,10 @@ void PinFunction::clearAlarmInterruptOnPin() {
 }
 
 bool PinFunction::isAlarmPinHigh() {
+	/*
+	 * GPIO_getInputPinValue returns a unsigned byte result for pin mask byte argument.
+	 * Non-zero result means AlarmSignalPin is high.
+	 */
 	return (GPIO_getInputPinValue(AlarmSignalPort, AlarmSignalPin) != 0);
 }
 

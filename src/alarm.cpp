@@ -77,10 +77,6 @@ void Alarm::clearAlarmOnMCU() {
 bool Alarm::isAlarmInterruptSignalHigh() {
 	// requires pin configured as input
 
-	/*
-	 * GPIO_getInputPinValue returns a unsigned byte result for pin mask byte argument.
-	 * Non-zero result means AlarmSignalPin is high.
-	 */
 	return PinFunction::isAlarmPinHigh();
 }
 

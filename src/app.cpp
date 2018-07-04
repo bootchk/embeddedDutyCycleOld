@@ -12,11 +12,11 @@ bool ledState = false;
 
 void App::onPowerOnReset() {
 	configureSleepingGPIO();
+	// assert app's pins (LED) configured
 
-	// TODO later
-	// TODO initialize state
-	LED::turnOff();
-	ledState = false;
+	// initialize state
+	LED::turnOn();
+	ledState = true;
 
 	// decide first alarm duration
 }
@@ -25,6 +25,7 @@ void App::onWakeForAlarm() {
 	// require app's persistent GPIO still configured (LED)
 
 	// app state transition
+
 	// toggle LED every time we wake
 	if (ledState) {
 		LED::turnOff();
@@ -34,14 +35,13 @@ void App::onWakeForAlarm() {
 	}
 	ledState = ! ledState;
 
-
 	// TODO decide next alarm duration
 }
 
 
 unsigned int App::durationOfSleep() {
 	// TODO later, app get from state
-	return 1;
+	return 10;
 }
 
 

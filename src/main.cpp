@@ -7,7 +7,30 @@
 
 
 
-// TODO need ISR for RTC interrupt?
+/*
+ * ISR for RTC alarm interrupt.
+ *
+ * Alarm pin is P1.3, so need ISR for Port 1
+ *
+ * It is possible to eliminate this if you don't enable interrupt after sleep before unlocking.
+ * Then the ISR is not called, even though interrupt occurred.
+ *
+ * Here, the ISR just clears interrupt flag, so no infinite interrupt loop.
+ */
+#if defined(__TI_COMPILER_VERSION__)
+#pragma vector=PORT1_VECTOR
+__interrupt void Port1_ISR(void)
+#elif defined(__GNUC__)
+void
+__attribute__
+((interrupt(PORT1_VECTOR))) Port1_ISR (void)
+#else
+#error Compiler not supported!
+#endif
+{
+	Alarm::clearAlarmOnMCU();
+}
+
 
 
 int main(void) {
@@ -50,8 +73,9 @@ int main(void) {
 		// assert app done with useful work
 		// assert GPIO in sleeping configuration
 	}
-	else {	// power on reset
-		// Reset clears lock bit.  No need for: MCUSleep::unlockMCUFromSleep();
+	else {	// power on reset or other reasons
+		// POR reset clears lock bit but other reasons may not.  Requires unlocked, so safer to always unlock.
+		MCUSleep::unlockMCUFromSleep();
 
 		/*
 		 * GPIO configuration is reset.

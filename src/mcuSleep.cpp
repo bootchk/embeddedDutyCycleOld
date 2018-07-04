@@ -27,11 +27,17 @@ void MCUSleep::enterLowestPowerSleep(){
 	      but those bit field names may be for another family member?
 	  */
 
+	  // This is also necessary if XT1 is on
+      // UCSCTL6 |= XT1OFF | XT2OFF;
+
 	  // For lowest power, PMM must be off
 	  PMM::configureOff();
 
-	  // This is also necessary if XT1 is on
-	  // UCSCTL6 |= XT1OFF | XT2OFF;
+	  /*
+	   * I don't think there is a race here.
+	   * Turning regulator off does not power down until enter LPM4.5
+	   * We can execute unlimited instructions here.
+	   */
 
 	  MCU::enterLPM4orLPM4_5();
 
