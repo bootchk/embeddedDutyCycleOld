@@ -75,5 +75,4 @@ private:
 
 	static void unlockMiscRegisters();
 	static void unlockOscControlRegister();
-
 };

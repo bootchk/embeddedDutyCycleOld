@@ -84,6 +84,9 @@ void Duty::setAlarmOrReset(unsigned int duration) {
 	}
 }
 
+/*
+ * Three simple delegations.
+ */
 
 /*
  * Presleep configuration:
@@ -100,4 +103,8 @@ void Duty::restoreMCUToPresleepConfiguration() {
 
 void Duty::lowerMCUToPresleepConfiguration() {
 	Alarm::unconfigureMcuSPIInterface();
+}
+
+void Duty::clearAlarmOnMCU() {
+	Alarm::clearAlarmOnMCU();
 }

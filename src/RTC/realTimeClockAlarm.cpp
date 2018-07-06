@@ -11,6 +11,24 @@
 
 
 
+
+namespace {
+
+/*
+ * Time is not zero and greater than previous given time.
+ */
+
+bool timeIsMonotonic(EpochTime nowTime) {
+	// TODO compare to previous read time, must be greater.
+	return true;
+}
+
+}
+
+
+
+
+
 /*
  * !!! If the RTC stops responding, system is failed, there is no practical action to take.
  * During testing, without proper connection to RTC,
@@ -24,6 +42,7 @@
  * then reverse conversion back to the type (RTCTime) that RTC expects.
  */
 bool RTC::setAlarm(Duration duration) {
+	bool result;
 
 	// TODO later, check preconditions for setting alarm
 	// duration is great enough
@@ -31,25 +50,40 @@ bool RTC::setAlarm(Duration duration) {
 	RTCTime now;
 	Bridge::readTime(&now);
 
+	/*
+	 * If RTC has failed, Bridge reads time as all zeroes.
+	 */
+	if ( not TimeConverter::isValidRTCTime(now) ) return false;
+
 	// 2 step conversion from RTCTime to epoch time
 	CalendarTime calendarTime = TimeConverter::convertRTCTimeToCalendarTime(now);
 	EpochTime nowTime = TimeConverter::convertCalendarTimeToEpochTime(calendarTime);
 
-	// calculate time of alarm
-	EpochTime alarmEpochTime = nowTime + duration;
+	if ( not timeIsMonotonic(nowTime)) {
+		result = false;
+	}
+	else {
 
-	// Reverse conversions
-	CalendarTime alarmCalendarTime = TimeConverter::convertEpochTimeToCalendarTime(alarmEpochTime);
-	RTCTime alarmRTCTime = TimeConverter::convertCalendarTimeToRTCTime(alarmCalendarTime);
+		// calculate time of alarm
+		EpochTime alarmEpochTime = nowTime + duration;
 
-	Bridge::writeAlarm(alarmRTCTime);
+		// Reverse conversions
+		CalendarTime alarmCalendarTime = TimeConverter::convertEpochTimeToCalendarTime(alarmEpochTime);
+		RTCTime alarmRTCTime = TimeConverter::convertCalendarTimeToRTCTime(alarmCalendarTime);
 
-	// ensure alarm is set properly by reading it and comparing
-	// TODO later
-	/*
-	 * Verify alarm is properly set by reading and compare
-	 * If it is not set properly, the system may sleep a very long time.
-	 * Also verify that now time is not zero.
-	 */
-	return true;
+		Bridge::writeAlarm(alarmRTCTime);
+
+		// TODO later
+		/*
+		 * Verify alarm is properly set by reading and compare
+		 * If it is not set properly, the system may sleep a very long time.
+		 * Also verify that now time is not zero.
+		 */
+		result = true;
+	}
+
+	return result;
 }
+
+
+

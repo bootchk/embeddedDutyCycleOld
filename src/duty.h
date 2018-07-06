@@ -66,4 +66,9 @@ public:
 	 * before sleep.
 	 */
 	static void setAlarmOrReset(unsigned int);
+
+	/*
+	 * Clear alarm interrupt.
+	 */
+	static void clearAlarmOnMCU();
 };

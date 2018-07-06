@@ -5,6 +5,7 @@
 
 #include "MCU/powerMgtModule.h"   // stopWatchdog
 
+#include <msp430.h>   // PORT1_VECTOR
 
 
 /*
@@ -21,14 +22,12 @@
 #pragma vector=PORT1_VECTOR
 __interrupt void Port1_ISR(void)
 #elif defined(__GNUC__)
-void
-__attribute__
-((interrupt(PORT1_VECTOR))) Port1_ISR (void)
+void __attribute__ ((interrupt(PORT1_VECTOR))) Port1_ISR (void)
 #else
 #error Compiler not supported!
 #endif
 {
-	Alarm::clearAlarmOnMCU();
+	Duty::clearAlarmOnMCU();
 }
 
 
@@ -53,6 +52,14 @@ int main(void) {
 	 * Dispatch on reason for wake.
 	 */
 	if (MCUSleep::isResetAWakeFromSleep()) {
+
+		/*
+		 * Trap to allow debugger to synch
+		 */
+		bool isTrapped;
+		isTrapped = true;
+		while(isTrapped);
+
 		MCUSleep::clearIsResetAWakeFromSleep();
 
 		/*

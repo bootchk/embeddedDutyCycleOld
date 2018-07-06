@@ -95,3 +95,15 @@ CalendarTime  TimeConverter::convertEpochTimeToCalendarTime( EpochTime epochTime
 	return calendarTime;
 
 }
+
+bool TimeConverter::isValidRTCTime(RTCTime & time) {
+	/*
+	 * Minimal check.
+	 * This catches only failure to read RTC chip.
+	 * It doesn't check other constraints.
+	 *
+	 * A valid day of month as read from RTC is [1,31]
+	 */
+	return (time.DayOfMonth > 0 );
+
+}

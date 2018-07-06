@@ -2,7 +2,7 @@
 #pragma once
 
 /*
- *
+ * See also AB08xx/rtcTime.h for RTCTime
  */
 
 typedef struct  {

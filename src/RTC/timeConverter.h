@@ -35,4 +35,6 @@ public:
 	 */
 	static EpochTime convertCalendarTimeToEpochTime(CalendarTime&);
 	static CalendarTime convertEpochTimeToCalendarTime(EpochTime);
+
+	static bool isValidRTCTime(RTCTime&);
 };
