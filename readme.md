@@ -4,7 +4,7 @@ embeddedDutyCycle
 
 A framework for duty cycling an embedded computer.
 
-To "duty cycle" means to sleep mostly, and wake (go on duty) rarely.  Duty cycling saves energy e.g. battery life.
+Duty cycle: a verb meaning sleep mostly, and wake (go on duty) rarely.  Duty cycling saves energy e.g. battery life.
 
 For an embedded computer (mcu), abstracts an external RTC and GPIO pins for an interrupt from it.
 
@@ -40,11 +40,11 @@ The duty cycle can be very large.  For example, the system theoretically could w
 Dev env
 -
 
-The project is an Eclipse IDE project, using GCC or ARM GCC.
-The project has paths to include files for dependencies.
+The project is a Code Composer Studio CCS (TI's variant of Eclipse) IDE project.
 
-The final build is intended to be in Energia IDE.
+The repository needs but does not contain a driverlib/ directory, which you can download from TI's MSPWare.
 
+The project derives from an example project for DriverLib.
 
 
 Low level time libraries
@@ -97,9 +97,9 @@ Classes
     app main.c
        DutyCycleLib
            AlarmLib
-               RTC  ( similar to Arduino-AB08XX)
+               RTC  ( similar to Arduino-AB08XX library)
                   Bridge
-                     Arduino or Energia SPI library
+                  SPI 
                Time (for Arduino, author Paul Stoffgren)
                Some mcu HAL e.g. MSP430 DriverLib (to set up the interrupt pin)
 

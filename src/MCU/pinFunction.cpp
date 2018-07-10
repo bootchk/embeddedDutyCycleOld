@@ -24,9 +24,9 @@
 
 // rename from hal namespace to alarmLib namespace
 
-// P1.6
+// P1.3
 #define AlarmSignalPort GPIO_PORT_P1
-#define AlarmSignalPin  GPIO_PIN6
+#define AlarmSignalPin  GPIO_PIN3
 
 // P1.2
 #define RTCSelectPort GPIO_PORT_P1
